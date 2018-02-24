@@ -78,31 +78,44 @@ var
   MStream: TMemoryStream = nil;
 
 const
-  CSSDecoration = '<style type="text/css">'+
-                  'code{'+
-                  '  color: #A00;'+
-                  '}'+
-                  'pre{'+
-                  '  background: #f4f4f4;'+
-                  '  border: 1px solid #ddd;'+
-                  '  border-left: 3px solid #f36d33;'+
-                  '  color: #555;'+
-                  '  overflow: auto;'+
-                  '  padding: 1em 1.5em;'+
-                  '  display: block;'+
-                  '}'+
-                  'pre code{'+
-                  '  color: inherit;'+
-                  '}'+
-                  'Blockquote{'+
-                  'border-left: 3px solid #d0d0d0;'+
-                  'padding-left: 0.5em;'+
-                  'margin-left:1em;'+
-                  '}'+
-                  'Blockquote p{'+
-                  'margin: 0;'+
-                  '}'+
-                  '</style>';
+  CSSDecoration = '<style type="text/css">'#10+
+                  'code{'#10+
+                  '  color: #A00;'#10+
+                  '}'#10+
+                  'pre{'#10+
+                  '  background: #f4f4f4;'#10+
+                  '  border: 1px solid #ddd;'#10+
+                  '  border-left: 3px solid #f36d33;'#10+
+                  '  color: #555;'#10+
+                  '  overflow: auto;'#10+
+                  '  padding: 1em 1.5em;'#10+
+                  '  display: block;'#10+
+                  '}'#10+
+                  'pre code{'#10+
+                  '  color: inherit;'#10+
+                  '}'#10+
+                  'Blockquote{'#10+
+                  '  border-left: 3px solid #d0d0d0;'#10+
+                  '  padding-left: 0.5em;'#10+
+                  '  margin-left:1em;'#10+
+                  '}'#10+
+                  'Blockquote p{'#10+
+                  '  margin: 0;'#10+
+                  '}'#10+
+                  'table{'#10+
+                  '  border:1px solid;'#10+
+                  '  border-collapse:collapse;'#10+
+                  '}'#10+
+                  'th{'+
+                  '  padding:5px;'#10+
+                  '  background: #e0e0e0;'#10+
+                  '  border:1px solid;'#10+
+                  '}'#10+
+                  'td{'#10+
+                  '  padding:5px;'#10+
+                  '  border:1px solid;'#10+
+                  '}'#10+
+                  '</style>'#10;
 
 { TCodeEmiter }
 
@@ -110,8 +123,6 @@ procedure TCodeEmiter.emitBlock(out_: TStringBuilder; lines: TStringList;
   meta: String);
 var
   s:string;
-  i:integer;
-  c:char;
 
   procedure exportlines;
   var
@@ -155,20 +166,7 @@ begin
         else out_.append('<pre><code class="'+meta+'">');
         for s in lines do
         begin
-          for i := 1 to Length(s) do
-          begin
-            c := s[i];
-            case c of
-              '&':
-                out_.append('&amp;');
-              '<':
-                out_.append('&lt;');
-              '>':
-                out_.append('&gt;');
-            else
-              out_.append(c);
-            end;
-          end;
+          TUtils.appendValue(out_,s,0,Length(s));
           out_.append(#10);
         end;
         out_.append('</code></pre>'#10);
@@ -206,14 +204,14 @@ procedure TMainForm.SetPreview;
 begin
   if SE_HTML.Modified then
   begin
-    HtmlViewer.LoadFromString(CSSDecoration+SE_HTML.Text);
+    HtmlViewer.LoadFromString(SE_HTML.Text);
     SE_HTML.Modified:=false;
   end;
 end;
 
 procedure TMainForm.B_ConvertClick(Sender: TObject);
 begin
-  SE_HTML.Text:=md.process(SE_MarkDown.Text);
+  SE_HTML.Text:=CSSDecoration+md.process(SE_MarkDown.Text);
   SE_HTML.Modified:=true;
   SetPreview;
 end;

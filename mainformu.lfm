@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 688
+  Left = 889
   Height = 499
-  Top = 425
+  Top = 411
   Width = 790
   Caption = 'Simple Markdown Editor'
   ClientHeight = 499

@@ -16,12 +16,12 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    B_Convert: TBitBtn;
+    B_Copy: TBitBtn;
+    B_OpenFile: TBitBtn;
+    B_Paste: TBitBtn;
     B_Save: TBitBtn;
-    B_Copy: TButton;
-    B_Paste: TButton;
-    B_ViewBrowser: TButton;
-    B_OpenFile: TButton;
-    B_Convert: TButton;
+    B_ViewBrowser: TBitBtn;
     HtmlViewer: THtmlViewer;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
@@ -299,7 +299,6 @@ end;
 
 procedure TMainForm.B_PasteClick(Sender: TObject);
 begin
-  SE_MarkDown.Clear;
   SE_MarkDown.PasteFromClipboard;
   PageControl1.ActivePageIndex:=0;
 end;

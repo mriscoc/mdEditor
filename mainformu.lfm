@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 889
+  Left = 776
   Height = 499
-  Top = 411
+  Top = 312
   Width = 790
   Caption = 'Simple Markdown Editor'
   ClientHeight = 499
@@ -11,13 +11,13 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '2.0.3.0'
   object Panel1: TPanel
     Left = 0
     Height = 36
-    Top = 463
+    Top = 0
     Width = 790
-    Align = alBottom
+    Align = alTop
     AutoSize = True
     ChildSizing.LeftRightSpacing = 5
     ChildSizing.TopBottomSpacing = 5
@@ -28,14 +28,14 @@ object MainForm: TMainForm
     ClientHeight = 36
     ClientWidth = 790
     TabOrder = 0
-    object B_OpenFile: TButton
+    object B_OpenFile: TBitBtn
       Left = 5
       Height = 25
       Top = 5
       Width = 76
       Caption = 'Open File'
       OnClick = B_OpenFileClick
-      TabOrder = 4
+      TabOrder = 1
     end
     object B_Save: TBitBtn
       Left = 83
@@ -44,49 +44,49 @@ object MainForm: TMainForm
       Width = 85
       Caption = 'Save to File'
       OnClick = B_SaveClick
-      TabOrder = 5
+      TabOrder = 0
     end
-    object B_Copy: TButton
+    object B_Copy: TBitBtn
       Left = 170
       Height = 25
       Top = 5
       Width = 71
       Caption = 'Copy All'
       OnClick = B_CopyClick
-      TabOrder = 1
+      TabOrder = 2
     end
-    object B_Paste: TButton
+    object B_Paste: TBitBtn
       Left = 243
       Height = 25
       Top = 5
-      Width = 97
-      Caption = 'Erase && Paste'
+      Width = 54
+      Caption = 'Paste'
       OnClick = B_PasteClick
-      TabOrder = 2
+      TabOrder = 3
     end
-    object B_Convert: TButton
-      Left = 342
+    object B_Convert: TBitBtn
+      Left = 299
       Height = 25
       Top = 5
       Width = 68
       Caption = 'Convert'
       OnClick = B_ConvertClick
-      TabOrder = 0
+      TabOrder = 4
     end
-    object B_ViewBrowser: TButton
-      Left = 412
+    object B_ViewBrowser: TBitBtn
+      Left = 369
       Height = 25
       Top = 5
       Width = 109
       Caption = 'View in Browser'
       OnClick = B_ViewBrowserClick
-      TabOrder = 3
+      TabOrder = 5
     end
   end
   object PageControl1: TPageControl
     Left = 0
     Height = 463
-    Top = 0
+    Top = 36
     Width = 387
     ActivePage = TS_MarkDown
     Align = alLeft
@@ -1107,13 +1107,13 @@ object MainForm: TMainForm
   object Splitter1: TSplitter
     Left = 387
     Height = 463
-    Top = 0
+    Top = 36
     Width = 5
   end
   object HtmlViewer: THtmlViewer
     Left = 392
     Height = 463
-    Top = 0
+    Top = 36
     Width = 398
     BorderStyle = htSingle
     HistoryMaxCount = 0
@@ -1123,6 +1123,7 @@ object MainForm: TMainForm
     PrintMarginRight = 2
     PrintMarginTop = 2
     PrintScale = 1
+    QuirksMode = qmDetect
     Align = alClient
     TabOrder = 3
   end

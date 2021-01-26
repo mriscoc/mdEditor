@@ -9,7 +9,8 @@ uses
   SynHighlighterPas, SynHighlighterCpp, SynHighlighterMulti, Forms, Controls,
   Graphics, Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor,
   MarkdownUtils, LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals,
-  HTMLUn2, SynHighlighterSBA;
+  HTMLUn2, SynHighlighterVHDL, ssl_openssl, httpsend,
+  BGRABitmap, BGRASvg;
 
 type
 
@@ -34,6 +35,7 @@ type
     SynExporterHTML1: TSynExporterHTML;
     SynFreePascalSyn1: TSynFreePascalSyn;
     SynHTMLSyn1: TSynHTMLSyn;
+    SynVHDLSyn1: TSynVHDLSyn;
     TS_MarkDown: TTabSheet;
     TS_HTML: TTabSheet;
     procedure B_CopyClick(Sender: TObject);
@@ -48,15 +50,14 @@ type
       var Handled: Boolean);
     procedure HtmlViewerHotSpotTargetClick(Sender: TObject; const Target,
       URL: ThtString; var Handled: boolean);
-    procedure HtmlViewerImageRequest(Sender: TObject; const SRC: ThtString;
+    procedure HtmlViewerImageRequest(Sender: TObject; const SRC: UnicodeString;
       var Stream: TStream);
     procedure SE_HTMLChange(Sender: TObject);
   private
+    function getStreamData(FileName: String): TStream;
     procedure OpenInBrowser;
     procedure SetPreview;
   end;
-
-  { CodeEmiter }
 
   { TCodeEmiter }
 
@@ -75,7 +76,7 @@ implementation
 var
   RootPath,f:string;
   md:TMarkdownProcessor=nil;
-  MStream: TMemoryStream = nil;
+  MStream:TMemoryStream=nil;
 
 const
   CSSDecoration = '<style type="text/css">'#10+
@@ -142,7 +143,7 @@ begin
   case meta of
     'vhdl':
       begin
-        MainForm.SynExporterHTML1.Highlighter:=TSynSBASyn.Create(MainForm);
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynVHDLSyn1;
         exportlines;
       end;
     'html':
@@ -173,29 +174,6 @@ begin
       end;
   end;
 end;
-
-
-(*
-More decoration:
-
-<style type="text/css">
-pre {
-  background-color: #eee;
-  border: 1px solid #999;
-  display: block;
-  padding: 10px;
-}
-
-Blockquote{
-  border-left: 3px solid #d0d0d0;
-  padding-left: 0.5em;
-  margin-left:1em;
-}
-Blockquote p{
-  margin: 0;
-}
-</style>
-*)
 
 
 { TMainForm }
@@ -229,6 +207,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 var
   i:integer;
 begin
+  MStream := TMemoryStream.Create;
   md := TMarkdownProcessor.createDialect(mdCommonMark);
   md.UnSafe := false;
   md.config.codeBlockEmitter:=TCodeEmiter.Create;
@@ -243,21 +222,19 @@ begin
   HtmlViewer.DefFontColor:=clBlack;
   HtmlViewer.DefFontName:='Helvetica';
   HtmlViewer.DefFontSize:=10;
-//  HtmlViewer.DefPreFontName:='Lucida Console';
   HtmlViewer.DefPreFontName:='Courier';
   HtmlViewer.ServerRoot:=RootPath;
 //  HtmlViewer.OnHotSpotTargetClick:=@HtmlViewerHotSpotTargetClick;
   HtmlViewer.OnHotSpotClick:=@HtmlViewerHotSpotClick;
   HtmlViewer.OnImageRequest:=@HtmlViewerImageRequest;
-  MStream := TMemoryStream.Create;
-  B_ConvertClick(Self);
+  HtmlViewer.LoadFromString(CSSDecoration);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   if FileExists(RootPath+f) then DeleteFile(RootPath+f);
-  if Assigned(MStream) then freeandnil(MStream);
   if assigned(md) then md.Free;
+  if Assigned(MStream) then freeandnil(MStream);
 end;
 
 procedure TMainForm.HtmlViewerHotSpotClick(Sender: TObject;
@@ -272,20 +249,109 @@ begin
   Handled:=OpenUrl(URL);
 end;
 
-procedure TMainForm.HtmlViewerImageRequest(Sender: TObject;
-  const SRC: ThtString; var Stream: TStream);
-
+procedure ConvertSVG(FileName:string);
 var
-  Filename: string;
+  bmp: TBGRABitmap;
+  svg: TBGRASVG;
 begin
-  Stream:=nil;
-  FileName:=IfThen(FileExists(SRC),SRC,RootPath+SRC);
-  if FileExists(FileName) then
+  if (pos('.svg',lowercase(FileName))>0) then
   begin
-    MStream.LoadFromFile(FileName);
-    Stream := MStream;
+    try
+      MStream.Position:=0;
+      svg:= TBGRASVG.Create(MStream);
+      try
+        bmp:=TBGRABitmap.Create(trunc(svg.Width.value),trunc(svg.Height.value));
+        svg.Draw(bmp.Canvas2D,0,0);
+        MStream.Clear;
+        bmp.Bitmap.SaveToStream(MStream);
+      finally
+        if assigned(bmp) then FreeAndNil(bmp);
+      end;
+    finally
+      if assigned(svg) then FreeAndNil(svg);
+    end;
   end;
 end;
+
+function TMainForm.getStreamData(FileName : String):TStream;
+var
+  sl        : TStringList;
+  bFail     : Boolean;
+  bTryAgain : Boolean;
+Begin
+  Result:=nil;
+  MStream.Clear;
+  with THTTPSend.Create do
+  Begin
+    sl := TStringList.Create;
+    if HTTPMethod('GET',FileName) then
+    Begin
+      MStream.CopyFrom(Document, 0);
+      // Need To check For Failed Retrieval...
+      MStream.Position:= 0;
+      sl.LoadFromStream(MStream);
+      bTryAgain := False;
+      bFail     := False;
+      if Length(sl.Text) = 0 then bFail:= True;
+      if MStream.Size = 0 then bFail:= True;
+
+      if MStream.Size < 1024 then
+      Begin
+        if Pos('Not Found', sl.Text) > 0 then bFail:= True;
+        if (Pos(LowerCase('<title>301 Moved Permanently</title>'), LowerCase(sl.Text)) > 0) or
+           (Pos(LowerCase('<html><body>'), LowerCase(sl.Text)) > 0) then
+        Begin
+          if Pos(LowerCase('<a href="'), LowerCase(sl.Text)) > 0 then
+          Begin
+            FileName := Copy(sl.Text, Pos('<a href="', sl.Text) + 9, Length(sl.Text));
+            FileName := Copy(FileName, 1, Pos('"', FileName) -1);
+            bTryAgain:= True;
+          End;
+        end;
+      end;
+
+      if bTryAgain then
+        // Call Function Again...
+        Result:= getStreamData(FileName);
+
+      if not bTryAgain And not bFail then
+      begin
+        ConvertSVG(FileName);
+        Result:= MStream;
+      end;
+
+    end; // If HTTPMethod
+    Free;
+    if Assigned(sl) then freeandnil(sl);
+  end; // With HTTPSend
+end;
+
+
+procedure TMainForm.HtmlViewerImageRequest(Sender: TObject;
+  const SRC: UnicodeString; var Stream: TStream);
+var
+  fullName  : String;
+
+Begin
+
+  // HTMLViewer needs to be nil'ed
+  Stream:= nil;
+
+  // is "fullName" a local file, if not aquire file from internet
+  fullName:=IfThen(FileExists(SRC),SRC,IfThen(FileExists(RootPath+SRC),RootPath+SRC,SRC));
+  fullName := HtmlViewer.HTMLExpandFilename(fullName);
+
+  if FileExists(fullName) then       // if local file, load it..
+  Begin
+    MStream.LoadFromFile(fullName);
+    ConvertSVG(fullName);
+    Stream:=MStream;
+  end else                           // if not local file, download it..
+  Begin
+    getStreamData(fullName);
+    Stream:=MStream;
+  End;
+End;
 
 procedure TMainForm.SE_HTMLChange(Sender: TObject);
 begin
@@ -334,11 +400,12 @@ begin
   p:=IfThen(DirectoryIsWritable(RootPath),RootPath+f,GetTempDir+f);
   try
     SE_HTML.Lines.SaveToFile(p);
-    OpenURL('file://'+p);
+    OpenURL(p);
   except
     ShowMessage('Can not create and open the temp file');
   end;
 end;
+
 
 end.
 

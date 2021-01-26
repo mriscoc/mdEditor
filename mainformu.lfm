@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 776
+  Left = 516
   Height = 499
-  Top = 312
+  Top = 366
   Width = 790
   Caption = 'Simple Markdown Editor'
   ClientHeight = 499
@@ -11,7 +11,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '2.0.3.0'
+  LCLVersion = '2.0.11.0'
   object Panel1: TPanel
     Left = 0
     Height = 36
@@ -1116,7 +1116,9 @@ object MainForm: TMainForm
     Top = 36
     Width = 398
     BorderStyle = htSingle
+    DefBackground = clWhite
     HistoryMaxCount = 0
+    ImageCacheCount = 10
     NoSelect = False
     PrintMarginBottom = 2
     PrintMarginLeft = 2
@@ -1132,22 +1134,22 @@ object MainForm: TMainForm
     Enabled = False
     KeyAttri.Foreground = clMaroon
     KeyAttri.Style = []
-    left = 280
-    top = 112
+    Left = 280
+    Top = 112
   end
   object OpenDialog1: TOpenDialog
     DefaultExt = '.*.md'
     Filter = 'MarkDown|*.md; *.text|TextFile|*.txt|All Files|*.*'
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 72
-    top = 112
+    Left = 72
+    Top = 112
   end
   object SaveDialog1: TSaveDialog
     DefaultExt = '.*.md'
     Filter = 'MarkDown|*.md;*.text|Text file|*.txt|All files|*.*'
     Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 72
-    top = 184
+    Left = 72
+    Top = 184
   end
   object SynExporterHTML1: TSynExporterHTML
     Color = clWindow
@@ -1161,8 +1163,8 @@ object MainForm: TMainForm
     HTMLFontSize = fs03
     Title = 'mdEditor'
     UseBackground = False
-    left = 72
-    top = 48
+    Left = 72
+    Top = 48
   end
   object SynFreePascalSyn1: TSynFreePascalSyn
     Enabled = False
@@ -1172,8 +1174,8 @@ object MainForm: TMainForm
     SymbolAttri.Foreground = clRed
     CompilerMode = pcmObjFPC
     NestedComments = True
-    left = 280
-    top = 48
+    Left = 280
+    Top = 48
   end
   object SynCppSyn1: TSynCppSyn
     DefaultFilter = 'Ficheros C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh'
@@ -1184,7 +1186,13 @@ object MainForm: TMainForm
     KeyAttri.Foreground = clRed
     NumberAttri.Foreground = clGreen
     StringAttri.Foreground = clBlue
-    left = 280
-    top = 184
+    Left = 280
+    Top = 184
+  end
+  object SynVHDLSyn1: TSynVHDLSyn
+    DefaultFilter = 'VHDL Files (*.vhd;*.vhdl)|*.vhd;*.vhdl'
+    Enabled = False
+    Left = 280
+    Top = 264
   end
 end

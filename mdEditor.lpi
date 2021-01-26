@@ -31,6 +31,9 @@
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="$Env(PRJOUT)\$NameOnly($(ProjFile))\$NameOnly($(ProjFile))"/>
+          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="$Env(Temp)\lazarus\lib\$(TargetCPU)-$(TargetOS)"/>
@@ -71,6 +74,9 @@
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="$Env(PRJOUT)\$NameOnly($(ProjFile))\$NameOnly($(ProjFile))"/>
+          </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
             <UnitOutputDirectory Value="$Env(Temp)\lazarus\lib\$(TargetCPU)-$(TargetOS)"/>
@@ -106,21 +112,30 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="FrameViewer09"/>
+        <PackageName Value="ExtraHighlighters"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="BGRABitmapPack"/>
       </Item2>
       <Item3>
-        <PackageName Value="fpc_markdown"/>
+        <PackageName Value="laz_synapse"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FrameViewer09"/>
       </Item4>
+      <Item5>
+        <PackageName Value="SynEdit"/>
+      </Item5>
+      <Item6>
+        <PackageName Value="fpc_markdown"/>
+      </Item6>
+      <Item7>
+        <PackageName Value="LCL"/>
+      </Item7>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="mdEditor.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -132,16 +147,14 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="synhighlightersba.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SynHighlighterSBA"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="$Env(PRJOUT)\$NameOnly($(ProjFile))\$NameOnly($(ProjFile))"/>
+    </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="$Env(Temp)\lazarus\lib\$(TargetCPU)-$(TargetOS)"/>

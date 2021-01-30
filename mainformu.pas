@@ -23,6 +23,7 @@ type
     B_Paste: TBitBtn;
     B_Save: TBitBtn;
     B_ViewBrowser: TBitBtn;
+    ChkB_DownloadfromWeb: TCheckBox;
     HtmlViewer: THtmlViewer;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
@@ -54,7 +55,9 @@ type
       var Stream: TStream);
     procedure SE_HTMLChange(Sender: TObject);
   private
+    procedure CheckParams;
     function getStreamData(FileName: String): TStream;
+    function OpenFile(FileName: string): boolean;
     procedure OpenInBrowser;
     procedure SetPreview;
   end;
@@ -228,6 +231,15 @@ begin
   HtmlViewer.OnHotSpotClick:=@HtmlViewerHotSpotClick;
   HtmlViewer.OnImageRequest:=@HtmlViewerImageRequest;
   HtmlViewer.LoadFromString(CSSDecoration);
+  CheckParams;
+end;
+
+procedure TMainForm.CheckParams;
+begin
+  If (ParamCount=1) and FileExists(ParamStr(1)) then
+  begin
+    OpenFile(ParamStr(1));
+  end;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -341,12 +353,12 @@ Begin
   fullName:=IfThen(FileExists(SRC),SRC,IfThen(FileExists(RootPath+SRC),RootPath+SRC,SRC));
   fullName := HtmlViewer.HTMLExpandFilename(fullName);
 
-  if FileExists(fullName) then       // if local file, load it..
+  if FileExists(fullName) then  // if local file, load it..
   Begin
     MStream.LoadFromFile(fullName);
     ConvertSVG(fullName);
     Stream:=MStream;
-  end else                           // if not local file, download it..
+  end else if ChkB_DownloadfromWeb.Checked then  // if not local file, download it..
   Begin
     getStreamData(fullName);
     Stream:=MStream;
@@ -374,13 +386,12 @@ begin
   OpenInBrowser;
 end;
 
-procedure TMainForm.B_OpenFileClick(Sender: TObject);
+function TMainForm.OpenFile(FileName:string):boolean;
 var NewPath:string;
 begin
-  if OpenDialog1.Execute then
-  begin
-    SE_MarkDown.Lines.LoadFromFile(OpenDialog1.FileName);
-    NewPath:=ExtractFilePath(OpenDialog1.FileName);
+  try
+    SE_MarkDown.Lines.LoadFromFile(FileName);
+    NewPath:=ExtractFilePath(FileName);
     if NewPath<>RootPath then
     begin
       SE_HTML.Clear;
@@ -389,9 +400,17 @@ begin
       HtmlViewer.ServerRoot:=NewPath;
       RootPath:=NewPath;
     end;
-    SaveDialog1.FileName:=OpenDialog1.FileName;
+    SaveDialog1.FileName:=FileName;
     PageControl1.ActivePageIndex:=0;
+    Result:=true;
+  except
+    Result:=false;
   end;
+end;
+
+procedure TMainForm.B_OpenFileClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute then OpenFile(OpenDialog1.FileName);
 end;
 
 procedure TMainForm.OpenInBrowser;

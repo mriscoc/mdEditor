@@ -25,6 +25,7 @@ type
     B_ViewBrowser: TBitBtn;
     ChkB_DownloadfromWeb: TCheckBox;
     HtmlViewer: THtmlViewer;
+    ImageList1: TImageList;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;

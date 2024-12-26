@@ -1,0 +1,3 @@
+[submodule "use/fpc-markdown"]
+	path = use/fpc-markdown
+	url = git@github.com:mriscoc/fpc-markdown.git

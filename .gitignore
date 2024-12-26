@@ -2,7 +2,6 @@ use/*/
 **/backup/
 **/lib/
 **/bin/
-*.res
 *.dbg
 *.lps
 *.compiled

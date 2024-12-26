@@ -70,7 +70,7 @@ function priv_lazbuild
 
 function priv_main
 (
-    set -xeuo pipefail
+    set -euo pipefail
     if ((${#})); then
         case ${1} in
             build) priv_lazbuild ;;

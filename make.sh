@@ -47,7 +47,7 @@ function priv_lazbuild
                     fi
             done < "${VAR[pkg]}"
         fi
-        find "${VAR[use]}" -type 'f' -name '*.lpk' -printf '\tadd package link\t%p\n' -exec \
+        find "${VAR[use]}" -type 'f' -name '*.lpk' -printf '\033[32m\tadd package link\t%p\033[0m\n' -exec \
             lazbuild --add-package-link {} + 1>&2
     fi
     declare -i errors=0
@@ -70,7 +70,7 @@ function priv_lazbuild
 
 function priv_main
 (
-    set -euo pipefail
+    set -xeuo pipefail
     if ((${#})); then
         case ${1} in
             build) priv_lazbuild ;;

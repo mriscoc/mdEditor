@@ -48,7 +48,8 @@ Function Build-Project {
             (Get-Command $_.Cmd).Source | Out-Host
         }
     If (Test-Path -Path '.gitmodules') {
-        & git submodule update --init --recursive --force --remote | Out-Null
+        & git submodule update --init --recursive --force --remote | Out-Host
+        ".... [[$($LastExitCode)]] git submodule update" | Out-Host
     }
     $Env:Ext = '0'
     $Env:Src = 'src'

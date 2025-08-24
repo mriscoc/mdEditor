@@ -10,7 +10,7 @@ uses
   Graphics, Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor,
   MarkdownUtils, LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals,
   HTMLUn2, SynHighlighterVHDL, ssl_openssl, httpsend,
-  BGRABitmap, BGRASvg;
+  BGRABitmap, BGRASvg, IniPropStorage;
 
 type
 
@@ -26,6 +26,7 @@ type
     ChkB_DownloadfromWeb: TCheckBox;
     HtmlViewer: THtmlViewer;
     ImageList1: TImageList;
+    IniPropStorage1: TIniPropStorage;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;
@@ -52,7 +53,7 @@ type
       var Handled: Boolean);
     procedure HtmlViewerHotSpotTargetClick(Sender: TObject; const Target,
       URL: ThtString; var Handled: boolean);
-    procedure HtmlViewerImageRequest(Sender: TObject; const SRC: UnicodeString;
+    procedure HtmlViewerImageRequest(Sender: TObject; const SRC: ThtString;
       var Stream: TStream);
     procedure SE_HTMLChange(Sender: TObject);
   private
@@ -78,7 +79,7 @@ implementation
 {$R *.lfm}
 
 var
-  RootPath,f:string;
+  RootPath,f:ThtString;
   md:TMarkdownProcessor=nil;
   MStream:TMemoryStream=nil;
 
@@ -339,11 +340,10 @@ Begin
   end; // With HTTPSend
 end;
 
-
 procedure TMainForm.HtmlViewerImageRequest(Sender: TObject;
-  const SRC: UnicodeString; var Stream: TStream);
+  const SRC: ThtString; var Stream: TStream);
 var
-  fullName  : String;
+  fullName  : ThtString;
 
 Begin
 
@@ -388,7 +388,7 @@ begin
 end;
 
 function TMainForm.OpenFile(FileName:string):boolean;
-var NewPath:string;
+var NewPath:ThtString;
 begin
   try
     SE_MarkDown.Lines.LoadFromFile(FileName);
@@ -401,7 +401,8 @@ begin
       HtmlViewer.ServerRoot:=NewPath;
       RootPath:=NewPath;
     end;
-    SaveDialog1.FileName:=FileName;
+    SaveDialog1.InitialDir:=NewPath;
+    SaveDialog1.FileName:=ExtractFileName(FileName);
     PageControl1.ActivePageIndex:=0;
     Result:=true;
   except

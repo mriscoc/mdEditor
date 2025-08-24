@@ -1,22 +1,23 @@
 object MainForm: TMainForm
-  Left = 1027
-  Height = 622
-  Top = 327
-  Width = 988
+  Left = 0
+  Height = 809
+  Top = 0
+  Width = 1177
   Caption = 'Simple Markdown Editor'
-  ClientHeight = 622
-  ClientWidth = 988
+  ClientHeight = 809
+  ClientWidth = 1177
   Constraints.MinHeight = 288
   Constraints.MinWidth = 662
   DesignTimePPI = 120
+  SessionProperties = 'Height;Left;PageControl1.Width;Top;Width'
+  LCLVersion = '4.3.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  SessionProperties = 'Height;Left;PageControl1.Width;Top;Width'
   object Panel1: TPanel
     Left = 0
     Height = 42
     Top = 0
-    Width = 988
+    Width = 1177
     Align = alTop
     AutoSize = True
     ChildSizing.LeftRightSpacing = 5
@@ -26,7 +27,7 @@ object MainForm: TMainForm
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 7
     ClientHeight = 42
-    ClientWidth = 988
+    ClientWidth = 1177
     TabOrder = 0
     object B_OpenFile: TBitBtn
       Left = 6
@@ -37,8 +38,8 @@ object MainForm: TMainForm
       Default = True
       Images = ImageList1
       ImageIndex = 0
-      OnClick = B_OpenFileClick
       TabOrder = 0
+      OnClick = B_OpenFileClick
     end
     object B_Save: TBitBtn
       Left = 117
@@ -48,8 +49,8 @@ object MainForm: TMainForm
       Caption = 'Save to File'
       Images = ImageList1
       ImageIndex = 1
-      OnClick = B_SaveClick
       TabOrder = 1
+      OnClick = B_SaveClick
     end
     object B_Copy: TBitBtn
       Left = 241
@@ -59,44 +60,44 @@ object MainForm: TMainForm
       Caption = 'Copy All'
       Images = ImageList1
       ImageIndex = 2
-      OnClick = B_CopyClick
       TabOrder = 2
+      OnClick = B_CopyClick
     end
     object B_Paste: TBitBtn
       Left = 345
       Height = 30
       Top = 6
-      Width = 81
+      Width = 80
       Caption = 'Paste'
       Images = ImageList1
       ImageIndex = 3
-      OnClick = B_PasteClick
       TabOrder = 3
+      OnClick = B_PasteClick
     end
     object B_Convert: TBitBtn
-      Left = 428
+      Left = 427
       Height = 30
       Top = 6
       Width = 97
       Caption = 'Convert'
       Images = ImageList1
       ImageIndex = 4
-      OnClick = B_ConvertClick
       TabOrder = 4
+      OnClick = B_ConvertClick
     end
     object B_ViewBrowser: TBitBtn
-      Left = 527
+      Left = 526
       Height = 30
       Top = 6
       Width = 151
       Caption = 'View in Browser'
       Images = ImageList1
       ImageIndex = 5
-      OnClick = B_ViewBrowserClick
       TabOrder = 5
+      OnClick = B_ViewBrowserClick
     end
     object ChkB_DownloadfromWeb: TCheckBox
-      Left = 814
+      Left = 1003
       Height = 30
       Top = 6
       Width = 161
@@ -108,7 +109,7 @@ object MainForm: TMainForm
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 580
+    Height = 767
     Top = 42
     Width = 484
     ActivePage = TS_HTML
@@ -117,11 +118,11 @@ object MainForm: TMainForm
     TabOrder = 1
     object TS_MarkDown: TTabSheet
       Caption = 'MarkDown'
-      ClientHeight = 547
+      ClientHeight = 734
       ClientWidth = 476
       inline SE_MarkDown: TSynEdit
         Left = 0
-        Height = 547
+        Height = 734
         Top = 0
         Width = 476
         Align = alClient
@@ -588,6 +589,10 @@ object MainForm: TMainForm
           object SynGutterMarks1: TSynGutterMarks
             Width = 30
             MouseActions = <>
+            MaxExtraMarksColums = 0
+            Options = [sgmoDeDuplicateMarksOnOverflow]
+            MarkupInfo.Background = clBtnFace
+            MarkupInfo.Foreground = clNone
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
             Width = 21
@@ -604,6 +609,9 @@ object MainForm: TMainForm
             MouseActions = <>
             ModifiedColor = 59900
             SavedColor = clGreen
+            MarkupInfo.Background = clNone
+            MarkupInfo.Foreground = clGreen
+            MarkupInfo.FrameColor = 59900
           end
           object SynGutterSeparator1: TSynGutterSeparator
             Width = 3
@@ -624,11 +632,11 @@ object MainForm: TMainForm
     end
     object TS_HTML: TTabSheet
       Caption = 'HTML'
-      ClientHeight = 547
+      ClientHeight = 734
       ClientWidth = 476
       inline SE_HTML: TSynEdit
         Left = 0
-        Height = 547
+        Height = 734
         Top = 0
         Width = 476
         Align = alClient
@@ -1094,6 +1102,10 @@ object MainForm: TMainForm
           object SynGutterMarks1: TSynGutterMarks
             Width = 30
             MouseActions = <>
+            MaxExtraMarksColums = 0
+            Options = [sgmoDeDuplicateMarksOnOverflow]
+            MarkupInfo.Background = clBtnFace
+            MarkupInfo.Foreground = clNone
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
             Width = 21
@@ -1110,6 +1122,9 @@ object MainForm: TMainForm
             MouseActions = <>
             ModifiedColor = 59900
             SavedColor = clGreen
+            MarkupInfo.Background = clNone
+            MarkupInfo.Foreground = clGreen
+            MarkupInfo.FrameColor = 59900
           end
           object SynGutterSeparator1: TSynGutterSeparator
             Width = 3
@@ -1131,15 +1146,15 @@ object MainForm: TMainForm
   end
   object Splitter1: TSplitter
     Left = 484
-    Height = 580
+    Height = 767
     Top = 42
     Width = 6
   end
   object HtmlViewer: THtmlViewer
     Left = 490
-    Height = 580
+    Height = 767
     Top = 42
-    Width = 498
+    Width = 687
     BorderStyle = htSingle
     DefBackground = clWhite
     HistoryMaxCount = 0
@@ -1214,7 +1229,7 @@ object MainForm: TMainForm
     NumberAttri.Foreground = clGreen
     StringAttri.Foreground = clBlue
     Left = 350
-    Top = 230
+    Top = 232
   end
   object SynVHDLSyn1: TSynVHDLSyn
     DefaultFilter = 'VHDL Files (*.vhd;*.vhdl)|*.vhd;*.vhdl'
@@ -1294,5 +1309,21 @@ object MainForm: TMainForm
     StoredValues = <>
     Left = 90
     Top = 430
+  end
+  object SynJScriptSyn1: TSynJScriptSyn
+    Enabled = False
+    CommentAttri.Foreground = clGray
+    IdentifierAttri.Foreground = 12615680
+    KeyAttri.Foreground = clRed
+    NumberAttri.Foreground = clGreen
+    StringAttri.Foreground = clBlue
+    Left = 352
+    Top = 432
+  end
+  object SynJSONSyn1: TSynJSONSyn
+    DefaultFilter = 'JSON Files (*.json)|*.json'
+    Enabled = False
+    Left = 352
+    Top = 552
   end
 end

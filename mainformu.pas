@@ -6,11 +6,12 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, SynEdit, SynHighlighterHTML, SynExportHTML,
-  SynHighlighterPas, SynHighlighterCpp, SynHighlighterMulti, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor,
-  MarkdownUtils, LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals,
-  HTMLUn2, SynHighlighterVHDL, ssl_openssl, httpsend,
-  BGRABitmap, BGRASvg, IniPropStorage;
+  SynHighlighterPas, SynHighlighterCpp, SynHighlighterMulti,
+  SynHighlighterJScript, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  Clipbrd, MarkdownProcessor, MarkdownUtils, LCLIntf, ComCtrls, Buttons,
+  StrUtils, HtmlView, HtmlGlobals, HTMLUn2, SynHighlighterVHDL,
+  SynHighlighterJSON, ssl_openssl, httpsend, BGRABitmap, BGRASvg,
+  IniPropStorage;
 
 type
 
@@ -38,6 +39,8 @@ type
     SynExporterHTML1: TSynExporterHTML;
     SynFreePascalSyn1: TSynFreePascalSyn;
     SynHTMLSyn1: TSynHTMLSyn;
+    SynJScriptSyn1: TSynJScriptSyn;
+    SynJSONSyn1: TSynJSONSyn;
     SynVHDLSyn1: TSynVHDLSyn;
     TS_MarkDown: TTabSheet;
     TS_HTML: TTabSheet;
@@ -154,6 +157,16 @@ begin
     'html':
       begin
         MainForm.SynExporterHTML1.Highlighter:=MainForm.SynHTMLSyn1;
+        exportlines;
+      end;
+    'js','jscript','javascript':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJScriptSyn1;
+        exportlines;
+      end;
+    'json':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJSONSyn1;
         exportlines;
       end;
     'fpc','pas','pascal':

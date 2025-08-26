@@ -122,10 +122,10 @@
         <PackageName Value="ExtraHighlighters_Dsgn"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEditDsgn"/>
+        <PackageName Value="ExtraHighlighters"/>
       </Item2>
       <Item3>
-        <PackageName Value="ExtraHighlighters"/>
+        <PackageName Value="SynEditDsgn"/>
       </Item3>
       <Item4>
         <PackageName Value="BGRABitmapPack"/>

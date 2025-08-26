@@ -112,9 +112,10 @@ object MainForm: TMainForm
     Height = 767
     Top = 42
     Width = 484
-    ActivePage = TS_HTML
+    ActivePage = TS_MarkDown
     Align = alLeft
-    TabIndex = 1
+    PopupMenu = SynPopupMenu1
+    TabIndex = 0
     TabOrder = 1
     object TS_MarkDown: TTabSheet
       Caption = 'MarkDown'
@@ -132,6 +133,7 @@ object MainForm: TMainForm
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
+        PopupMenu = SynPopupMenu1
         TabOrder = 0
         Gutter.Width = 72
         Gutter.MouseActions = <>
@@ -646,6 +648,7 @@ object MainForm: TMainForm
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
+        PopupMenu = SynPopupMenu1
         TabOrder = 0
         Gutter.Width = 72
         Gutter.MouseActions = <>
@@ -1167,6 +1170,7 @@ object MainForm: TMainForm
     PrintScale = 1
     QuirksMode = qmDetect
     Align = alClient
+    PopupMenu = PopupMenu1
     TabOrder = 3
   end
   object SynHTMLSyn1: TSynHTMLSyn
@@ -1174,8 +1178,8 @@ object MainForm: TMainForm
     Enabled = False
     KeyAttri.Foreground = clMaroon
     KeyAttri.Style = []
-    Left = 350
-    Top = 140
+    Left = 392
+    Top = 128
   end
   object OpenDialog1: TOpenDialog
     DefaultExt = '.*.md'
@@ -1216,7 +1220,7 @@ object MainForm: TMainForm
     NestedComments = True
     TypeHelpers = False
     StringMultilineMode = []
-    Left = 350
+    Left = 392
     Top = 60
   end
   object SynCppSyn1: TSynCppSyn
@@ -1228,14 +1232,14 @@ object MainForm: TMainForm
     KeyAttri.Foreground = clRed
     NumberAttri.Foreground = clGreen
     StringAttri.Foreground = clBlue
-    Left = 350
-    Top = 232
+    Left = 392
+    Top = 200
   end
   object SynVHDLSyn1: TSynVHDLSyn
     DefaultFilter = 'VHDL Files (*.vhd;*.vhdl)|*.vhd;*.vhdl'
     Enabled = False
-    Left = 350
-    Top = 330
+    Left = 392
+    Top = 272
   end
   object ImageList1: TImageList
     Left = 90
@@ -1317,13 +1321,52 @@ object MainForm: TMainForm
     KeyAttri.Foreground = clRed
     NumberAttri.Foreground = clGreen
     StringAttri.Foreground = clBlue
-    Left = 352
-    Top = 432
+    Left = 392
+    Top = 344
   end
   object SynJSONSyn1: TSynJSONSyn
     DefaultFilter = 'JSON Files (*.json)|*.json'
     Enabled = False
-    Left = 352
-    Top = 552
+    Left = 392
+    Top = 488
+  end
+  object SynJavaSyn1: TSynJavaSyn
+    DefaultFilter = 'Java Files (*.java)|*.java'
+    Enabled = False
+    Left = 392
+    Top = 416
+  end
+  object SynSmaliSyn1: TSynSmaliSyn
+    Enabled = False
+    Left = 392
+    Top = 560
+  end
+  object SynXMLSyn1: TSynXMLSyn
+    DefaultFilter = 'XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd'
+    Enabled = False
+    WantBracesParsed = False
+    Left = 248
+    Top = 128
+  end
+  object SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn
+    DefaultFilter = 'UNIX Shell Scripts (*.sh)|*.sh'
+    Enabled = False
+    Left = 248
+    Top = 60
+  end
+  object PopupMenu1: TPopupMenu
+    Images = ImageList1
+    Left = 528
+    Top = 60
+    object CopyHTLMViewer: TMenuItem
+      Caption = 'Copy'
+      ImageIndex = 2
+      ShortCut = 16451
+      OnClick = CopyHTLMViewerClick
+    end
+  end
+  object SynPopupMenu1: TSynPopupMenu
+    Left = 88
+    Top = 529
   end
 end

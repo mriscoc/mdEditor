@@ -7,11 +7,13 @@ interface
 uses
   Classes, SysUtils, LazFileUtils, SynEdit, SynHighlighterHTML, SynExportHTML,
   SynHighlighterPas, SynHighlighterCpp, SynHighlighterMulti,
-  SynHighlighterJScript, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  Clipbrd, MarkdownProcessor, MarkdownUtils, LCLIntf, ComCtrls, Buttons,
-  StrUtils, HtmlView, HtmlGlobals, HTMLUn2, SynHighlighterVHDL,
-  SynHighlighterJSON, ssl_openssl, httpsend, BGRABitmap, BGRASvg,
-  IniPropStorage;
+  SynHighlighterJScript, SynHighlighterJava, SynHighlighterXML,
+  synhighlighterunixshellscript, SynPopupMenu, Forms, Controls, Graphics,
+  Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor, MarkdownUtils,
+  LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals, HTMLUn2,
+  SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali,
+  SynHighlighterMarkdown, ssl_openssl, httpsend, BGRABitmap, BGRASvg,
+  IniPropStorage, Menus;
 
 type
 
@@ -28,9 +30,11 @@ type
     HtmlViewer: THtmlViewer;
     ImageList1: TImageList;
     IniPropStorage1: TIniPropStorage;
+    CopyHTLMViewer: TMenuItem;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    PopupMenu1: TPopupMenu;
     SaveDialog1: TSaveDialog;
     SE_MarkDown: TSynEdit;
     SE_HTML: TSynEdit;
@@ -39,9 +43,14 @@ type
     SynExporterHTML1: TSynExporterHTML;
     SynFreePascalSyn1: TSynFreePascalSyn;
     SynHTMLSyn1: TSynHTMLSyn;
+    SynJavaSyn1: TSynJavaSyn;
     SynJScriptSyn1: TSynJScriptSyn;
     SynJSONSyn1: TSynJSONSyn;
+    SynPopupMenu1: TSynPopupMenu;
+    SynSmaliSyn1: TSynSmaliSyn;
+    SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn;
     SynVHDLSyn1: TSynVHDLSyn;
+    SynXMLSyn1: TSynXMLSyn;
     TS_MarkDown: TTabSheet;
     TS_HTML: TTabSheet;
     procedure B_CopyClick(Sender: TObject);
@@ -58,6 +67,7 @@ type
       URL: ThtString; var Handled: boolean);
     procedure HtmlViewerImageRequest(Sender: TObject; const SRC: ThtString;
       var Stream: TStream);
+    procedure CopyHTLMViewerClick(Sender: TObject);
     procedure SE_HTMLChange(Sender: TObject);
   private
     procedure CheckParams;
@@ -164,6 +174,11 @@ begin
         MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJScriptSyn1;
         exportlines;
       end;
+    'java':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJavaSyn1;
+        exportlines;
+      end;
     'json':
       begin
         MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJSONSyn1;
@@ -177,6 +192,21 @@ begin
     'cpp','c++','c':
       begin
         MainForm.SynExporterHTML1.Highlighter:=MainForm.SynCppSyn1;
+        exportlines;
+      end;
+    'cmd','shell','bash':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynUNIXShellScriptSyn1;
+        exportlines;
+      end;
+    'xml':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynXMLSyn1;
+        exportlines;
+      end;
+    'smali':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynSmaliSyn1;
         exportlines;
       end
     else
@@ -378,6 +408,11 @@ Begin
     Stream:=MStream;
   End;
 End;
+
+procedure TMainForm.CopyHTLMViewerClick(Sender: TObject);
+begin
+  HtmlViewer.CopyToClipboard;
+end;
 
 procedure TMainForm.SE_HTMLChange(Sender: TObject);
 begin

@@ -59,6 +59,7 @@ type
     procedure B_OpenFileClick(Sender: TObject);
     procedure B_ConvertClick(Sender: TObject);
     procedure B_SaveClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HtmlViewerHotSpotClick(Sender: TObject; const SRC: ThtString;
@@ -248,6 +249,32 @@ begin
   if savedialog1.Execute then
   begin
     SE_MarkDown.Lines.SaveToFile(savedialog1.FileName);
+  end;
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  response : Integer;
+begin
+  CanClose := not SE_MarkDown.Modified;
+  If not CanClose then
+  begin
+    response := MessageDlg(
+      'Do you want to save changes before closing?',
+      mtConfirmation, // Tipo de mensaje: Confirmación
+      [mbYes, mbNo, mbCancel], // Botones disponibles
+      0 // Contexto de ayuda (normalmente 0)
+    );
+    case response of
+      mrYes:
+        if savedialog1.Execute then
+        begin
+          CanClose := true;
+          SE_MarkDown.Lines.SaveToFile(savedialog1.FileName);
+        end;
+      mrNo: CanClose := true;
+      mrCancel: CanClose := false;
+    end;
   end;
 end;
 

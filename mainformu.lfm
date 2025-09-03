@@ -11,6 +11,7 @@ object MainForm: TMainForm
   DesignTimePPI = 120
   SessionProperties = 'Height;Left;PageControl1.Width;Top;Width'
   LCLVersion = '4.3.0.0'
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object Panel1: TPanel

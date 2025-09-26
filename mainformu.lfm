@@ -565,7 +565,7 @@ object MainForm: TMainForm
         MouseActions = <>
         MouseTextActions = <>
         MouseSelActions = <>
-        Options = [eoAutoIndent, eoBracketHighlight, eoGroupUndo, eoShowSpecialChars, eoSmartTabs]
+        Options = [eoAutoIndent, eoBracketHighlight, eoGroupUndo, eoShowSpecialChars, eoSmartTabs, eoTabsToSpaces]
         MouseOptions = [emAltSetsColumnMode]
         VisibleSpecialChars = [vscSpace, vscTabAtLast]
         ScrollBars = ssAutoBoth
@@ -588,6 +588,7 @@ object MainForm: TMainForm
         LineHighlightColor.Background = clCream
         LineHighlightColor.Foreground = clNone
         TabWidth = 4
+        OnChange = SE_MarkDownChange
         inline SynLeftGutterPartList1: TSynGutterPartList
           object SynGutterMarks1: TSynGutterMarks
             Width = 30

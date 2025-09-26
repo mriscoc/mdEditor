@@ -12,7 +12,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor, MarkdownUtils,
   LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals, HTMLUn2,
   SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali,
-  SynHighlighterMarkdown, ssl_openssl, httpsend, BGRABitmap, BGRASvg,
+  ssl_openssl, httpsend, BGRABitmap, BGRASvg,
   IniPropStorage, Menus;
 
 type
@@ -70,6 +70,7 @@ type
       var Stream: TStream);
     procedure CopyHTLMViewerClick(Sender: TObject);
     procedure SE_HTMLChange(Sender: TObject);
+    procedure SE_MarkDownChange(Sender: TObject);
   private
     procedure CheckParams;
     function getStreamData(FileName: String): TStream;
@@ -282,6 +283,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 var
   i:integer;
 begin
+  savedialog1.FileName := 'untitled.md';
   MStream := TMemoryStream.Create;
   md := TMarkdownProcessor.createDialect(mdCommonMark);
   md.UnSafe := false;
@@ -446,6 +448,11 @@ begin
   SetPreview;
 end;
 
+procedure TMainForm.SE_MarkDownChange(Sender: TObject);
+begin
+  MainForm.Caption:='Simple Markdown Editor: ' + IfThen(SE_MarkDown.Modified, '*', '') + ExtractFileName(savedialog1.FileName);
+end;
+
 procedure TMainForm.B_CopyClick(Sender: TObject);
 begin
   Clipboard.AsText:=SE_MarkDown.text;
@@ -478,6 +485,7 @@ begin
     end;
     SaveDialog1.InitialDir:=NewPath;
     SaveDialog1.FileName:=ExtractFileName(FileName);
+    MainForm.SE_MarkDownChange(self);
     PageControl1.ActivePageIndex:=0;
     Result:=true;
   except

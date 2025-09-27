@@ -1,7 +1,5 @@
 unit mainformu;
 
-{$mode objfpc}{$H+}
-
 interface
 
 uses
@@ -13,13 +11,20 @@ uses
   LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals, HTMLUn2,
   SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali,
   ssl_openssl, httpsend, BGRABitmap, BGRASvg,
-  IniPropStorage, Menus;
+  IniPropStorage, Menus, ActnList;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    Open: TAction;
+    Save: TAction;
+    CopyAll: TAction;
+    Paste: TAction;
+    Convert: TAction;
+    View: TAction;
+    ActionList1: TActionList;
     B_Convert: TBitBtn;
     B_Copy: TBitBtn;
     B_OpenFile: TBitBtn;

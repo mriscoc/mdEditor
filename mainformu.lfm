@@ -35,7 +35,7 @@ object MainForm: TMainForm
       Height = 30
       Top = 6
       Width = 109
-      Caption = 'Open File'
+      Action = Open
       Default = True
       Images = ImageList1
       ImageIndex = 0
@@ -47,7 +47,7 @@ object MainForm: TMainForm
       Height = 30
       Top = 6
       Width = 122
-      Caption = 'Save to File'
+      Action = Save
       Images = ImageList1
       ImageIndex = 1
       TabOrder = 1
@@ -58,7 +58,7 @@ object MainForm: TMainForm
       Height = 30
       Top = 6
       Width = 102
-      Caption = 'Copy All'
+      Action = CopyAll
       Images = ImageList1
       ImageIndex = 2
       TabOrder = 2
@@ -69,7 +69,7 @@ object MainForm: TMainForm
       Height = 30
       Top = 6
       Width = 80
-      Caption = 'Paste'
+      Action = Paste
       Images = ImageList1
       ImageIndex = 3
       TabOrder = 3
@@ -80,7 +80,7 @@ object MainForm: TMainForm
       Height = 30
       Top = 6
       Width = 97
-      Caption = 'Convert'
+      Action = Convert
       Images = ImageList1
       ImageIndex = 4
       TabOrder = 4
@@ -91,7 +91,7 @@ object MainForm: TMainForm
       Height = 30
       Top = 6
       Width = 151
-      Caption = 'View in Browser'
+      Action = View
       Images = ImageList1
       ImageIndex = 5
       TabOrder = 5
@@ -1370,5 +1370,42 @@ object MainForm: TMainForm
   object SynPopupMenu1: TSynPopupMenu
     Left = 88
     Top = 529
+  end
+  object ActionList1: TActionList
+    Images = ImageList1
+    Left = 248
+    Top = 230
+    object Open: TAction
+      Caption = 'Open File'
+      ImageIndex = 0
+      ShortCut = 16463
+      OnExecute = B_OpenFileClick
+    end
+    object Save: TAction
+      Caption = 'Save to File'
+      ImageIndex = 1
+      ShortCut = 16467
+      OnExecute = B_SaveClick
+    end
+    object CopyAll: TAction
+      Caption = 'Copy All'
+      ImageIndex = 2
+      OnExecute = B_CopyClick
+    end
+    object Paste: TAction
+      Caption = 'Paste'
+      ImageIndex = 3
+      OnExecute = B_PasteClick
+    end
+    object Convert: TAction
+      Caption = 'Convert'
+      ImageIndex = 4
+      OnExecute = B_ConvertClick
+    end
+    object View: TAction
+      Caption = 'View in Browser'
+      ImageIndex = 5
+      OnExecute = B_ViewBrowserClick
+    end
   end
 end

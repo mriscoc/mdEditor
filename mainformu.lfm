@@ -35,7 +35,7 @@ object MainForm: TMainForm
       Height = 30
       Top = 6
       Width = 109
-      Action = Open
+      Action = A_OpenFile
       Default = True
       Images = ImageList1
       ImageIndex = 0
@@ -46,52 +46,49 @@ object MainForm: TMainForm
       Left = 117
       Height = 30
       Top = 6
-      Width = 122
-      Action = Save
-      Images = ImageList1
+      Width = 102
+      Action = A_SaveAs
       ImageIndex = 1
       TabOrder = 1
-      OnClick = B_SaveClick
     end
     object B_Copy: TBitBtn
-      Left = 241
+      Left = 221
       Height = 30
       Top = 6
       Width = 102
-      Action = CopyAll
+      Action = A_CopyAll
       Images = ImageList1
       ImageIndex = 2
       TabOrder = 2
       OnClick = B_CopyClick
     end
     object B_Paste: TBitBtn
-      Left = 345
+      Left = 325
       Height = 30
       Top = 6
-      Width = 80
-      Action = Paste
-      Images = ImageList1
+      Width = 60
+      Action = A_Paste
       ImageIndex = 3
       TabOrder = 3
       OnClick = B_PasteClick
     end
     object B_Convert: TBitBtn
-      Left = 427
+      Left = 387
       Height = 30
       Top = 6
       Width = 97
-      Action = Convert
+      Action = A_Convert
       Images = ImageList1
       ImageIndex = 4
       TabOrder = 4
       OnClick = B_ConvertClick
     end
     object B_ViewBrowser: TBitBtn
-      Left = 526
+      Left = 486
       Height = 30
       Top = 6
       Width = 151
-      Action = View
+      Action = A_View
       Images = ImageList1
       ImageIndex = 5
       TabOrder = 5
@@ -1375,34 +1372,39 @@ object MainForm: TMainForm
     Images = ImageList1
     Left = 248
     Top = 230
-    object Open: TAction
+    object A_OpenFile: TAction
       Caption = 'Open File'
       ImageIndex = 0
       ShortCut = 16463
       OnExecute = B_OpenFileClick
     end
-    object Save: TAction
-      Caption = 'Save to File'
+    object A_SaveFile: TAction
+      Caption = 'Save File'
       ImageIndex = 1
       ShortCut = 16467
-      OnExecute = B_SaveClick
+      OnExecute = A_SaveFileExecute
     end
-    object CopyAll: TAction
+    object A_SaveAs: TAction
+      Caption = 'Save to File'
+      ImageIndex = 1
+      OnExecute = B_SaveAsClick
+    end
+    object A_CopyAll: TAction
       Caption = 'Copy All'
       ImageIndex = 2
       OnExecute = B_CopyClick
     end
-    object Paste: TAction
+    object A_Paste: TAction
       Caption = 'Paste'
       ImageIndex = 3
       OnExecute = B_PasteClick
     end
-    object Convert: TAction
+    object A_Convert: TAction
       Caption = 'Convert'
       ImageIndex = 4
       OnExecute = B_ConvertClick
     end
-    object View: TAction
+    object A_View: TAction
       Caption = 'View in Browser'
       ImageIndex = 5
       OnExecute = B_ViewBrowserClick

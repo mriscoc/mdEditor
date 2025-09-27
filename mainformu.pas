@@ -18,12 +18,13 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    Open: TAction;
-    Save: TAction;
-    CopyAll: TAction;
-    Paste: TAction;
-    Convert: TAction;
-    View: TAction;
+    A_SaveFile: TAction;
+    A_OpenFile: TAction;
+    A_SaveAs: TAction;
+    A_CopyAll: TAction;
+    A_Paste: TAction;
+    A_Convert: TAction;
+    A_View: TAction;
     ActionList1: TActionList;
     B_Convert: TBitBtn;
     B_Copy: TBitBtn;
@@ -63,7 +64,7 @@ type
     procedure B_ViewBrowserClick(Sender: TObject);
     procedure B_OpenFileClick(Sender: TObject);
     procedure B_ConvertClick(Sender: TObject);
-    procedure B_SaveClick(Sender: TObject);
+    procedure B_SaveAsClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -74,12 +75,14 @@ type
     procedure HtmlViewerImageRequest(Sender: TObject; const SRC: ThtString;
       var Stream: TStream);
     procedure CopyHTLMViewerClick(Sender: TObject);
+    procedure A_SaveFileExecute(Sender: TObject);
     procedure SE_HTMLChange(Sender: TObject);
     procedure SE_MarkDownChange(Sender: TObject);
   private
     procedure CheckParams;
     function getStreamData(FileName: String): TStream;
     function OpenFile(FileName: string): boolean;
+    procedure SaveToFile;
     procedure OpenInBrowser;
     procedure SetPreview;
   end;
@@ -249,13 +252,21 @@ begin
   SetPreview;
 end;
 
-procedure TMainForm.B_SaveClick(Sender: TObject);
+procedure TMainForm.SaveToFile;
+begin
+  try
+    SE_MarkDown.Lines.SaveToFile(savedialog1.FileName);
+    SE_MarkDown.Modified:=false;
+    SE_MarkDownChange(self);
+  except
+    ShowMessage('Can not save the file');
+  end;
+end;
+
+procedure TMainForm.B_SaveAsClick(Sender: TObject);
 begin
   PageControl1.ActivePageIndex:=0;
-  if savedialog1.Execute then
-  begin
-    SE_MarkDown.Lines.SaveToFile(savedialog1.FileName);
-  end;
+  if savedialog1.Execute then SaveToFile;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -448,6 +459,11 @@ begin
   HtmlViewer.CopyToClipboard;
 end;
 
+procedure TMainForm.A_SaveFileExecute(Sender: TObject);
+begin
+  SaveToFile;
+end;
+
 procedure TMainForm.SE_HTMLChange(Sender: TObject);
 begin
   SetPreview;
@@ -455,7 +471,7 @@ end;
 
 procedure TMainForm.SE_MarkDownChange(Sender: TObject);
 begin
-  MainForm.Caption:='Simple Markdown Editor: ' + IfThen(SE_MarkDown.Modified, '*', '') + ExtractFileName(savedialog1.FileName);
+  Caption:='Simple Markdown Editor: ' + IfThen(SE_MarkDown.Modified, '*', '') + ExtractFileName(savedialog1.FileName);
 end;
 
 procedure TMainForm.B_CopyClick(Sender: TObject);
@@ -490,7 +506,7 @@ begin
     end;
     SaveDialog1.InitialDir:=NewPath;
     SaveDialog1.FileName:=ExtractFileName(FileName);
-    MainForm.SE_MarkDownChange(self);
+    SE_MarkDownChange(self);
     PageControl1.ActivePageIndex:=0;
     Result:=true;
   except

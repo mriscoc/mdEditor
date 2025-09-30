@@ -4,14 +4,14 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, SynEdit, SynHighlighterHTML, SynExportHTML,
-  SynHighlighterPas, SynHighlighterCpp, SynHighlighterMulti,
+  SynHighlighterPas, SynHighlighterCpp, dbugintf,
   SynHighlighterJScript, SynHighlighterJava, SynHighlighterXML,
   synhighlighterunixshellscript, SynPopupMenu, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor, MarkdownUtils,
   LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals, HTMLUn2,
-  SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali,
-  ssl_openssl, httpsend, BGRABitmap, BGRASvg,
-  IniPropStorage, Menus, ActnList;
+  SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali, SynHighlighterMarkdown,
+  SynEditMarkupHighAll, ssl_openssl, httpsend, BGRABitmap, BGRASvg,
+  IniPropStorage, Menus, ActnList, FileCtrl;
 
 type
 
@@ -52,6 +52,7 @@ type
     SynJavaSyn1: TSynJavaSyn;
     SynJScriptSyn1: TSynJScriptSyn;
     SynJSONSyn1: TSynJSONSyn;
+    SynMarkdownSyn: TSynMarkdownSyn;
     SynPopupMenu1: TSynPopupMenu;
     SynSmaliSyn1: TSynSmaliSyn;
     SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn;
@@ -80,8 +81,9 @@ type
     procedure SE_MarkDownChange(Sender: TObject);
   private
     procedure CheckParams;
-    function getStreamData(FileName: String): TStream;
-    function OpenFile(FileName: string): boolean;
+    function getStreamData(Path: TFileName): TStream;
+    function OpenFile(Path: TFileName): boolean;
+    function SaveAs: boolean;
     procedure SaveToFile;
     procedure OpenInBrowser;
     procedure SetPreview;
@@ -102,9 +104,10 @@ implementation
 {$R *.lfm}
 
 var
-  RootPath,f:ThtString;
+  RootPath,f,FileName:TFileName;
   md:TMarkdownProcessor=nil;
   MStream:TMemoryStream=nil;
+  SynMarkup: TSynEditMarkupHighlightAllCaret;
 
 const
   CSSDecoration = '<style type="text/css">'#10+
@@ -255,18 +258,31 @@ end;
 procedure TMainForm.SaveToFile;
 begin
   try
-    SE_MarkDown.Lines.SaveToFile(savedialog1.FileName);
+    SE_MarkDown.Lines.SaveToFile(FileName);
     SE_MarkDown.Modified:=false;
     SE_MarkDownChange(self);
-  except
-    ShowMessage('Can not save the file');
+  except on E: Exception do
+    ShowMessage('Can not save the file: '+E.Message);
   end;
+end;
+
+function TMainForm.SaveAs:boolean;
+begin
+  SaveDialog1.InitialDir:=FileName;
+  SaveDialog1.FileName:=ExtractFileName(FileName);
+  if savedialog1.Execute then
+  begin
+    FileName:=savedialog1.FileName;
+    SaveToFile;
+    result:=true;
+  end else
+    result:=false;
 end;
 
 procedure TMainForm.B_SaveAsClick(Sender: TObject);
 begin
   PageControl1.ActivePageIndex:=0;
-  if savedialog1.Execute then SaveToFile;
+  SaveAs;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -277,18 +293,13 @@ begin
   If not CanClose then
   begin
     response := MessageDlg(
-      'Do you want to save changes before closing?',
+      'Do you want to save changes?',
       mtConfirmation, // Tipo de mensaje: Confirmación
       [mbYes, mbNo, mbCancel], // Botones disponibles
       0 // Contexto de ayuda (normalmente 0)
     );
     case response of
-      mrYes:
-        if savedialog1.Execute then
-        begin
-          CanClose := true;
-          SE_MarkDown.Lines.SaveToFile(savedialog1.FileName);
-        end;
+      mrYes: CanClose := SaveAs;
       mrNo: CanClose := true;
       mrCancel: CanClose := false;
     end;
@@ -299,7 +310,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 var
   i:integer;
 begin
-  savedialog1.FileName := 'untitled.md';
+  FileName := 'untitled.md';
   MStream := TMemoryStream.Create;
   md := TMarkdownProcessor.createDialect(mdCommonMark);
   md.UnSafe := false;
@@ -310,6 +321,11 @@ begin
     f:=Format('%s%.3d.html',['markdown',I]);
     Inc(I);
   Until not FileExists(RootPath+f);
+  SynMarkup := TSynEditMarkupHighlightAllCaret(SE_MarkDown.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+  SynMarkup.MarkupInfo.Background := clSkyBlue;
+  SynMarkup.WaitTime := 1000; // ms
+  SynMarkup.Trim := True;
+  SynMarkup.FullWord:= True;
   PageControl1.ActivePageIndex:=0;
   HtmlViewer.DefBackground:=clWhite;
   HtmlViewer.DefFontColor:=clBlack;
@@ -326,10 +342,7 @@ end;
 
 procedure TMainForm.CheckParams;
 begin
-  If (ParamCount=1) and FileExists(ParamStr(1)) then
-  begin
-    OpenFile(ParamStr(1));
-  end;
+  If (ParamCount=1) and FileExists(ParamStr(1)) then OpenFile(ParamStr(1));
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -375,7 +388,7 @@ begin
   end;
 end;
 
-function TMainForm.getStreamData(FileName : String):TStream;
+function TMainForm.getStreamData(Path: TFileName):TStream;
 var
   sl        : TStringList;
   bFail     : Boolean;
@@ -386,7 +399,7 @@ Begin
   with THTTPSend.Create do
   Begin
     sl := TStringList.Create;
-    if HTTPMethod('GET',FileName) then
+    if HTTPMethod('GET',Path) then
     Begin
       MStream.CopyFrom(Document, 0);
       // Need To check For Failed Retrieval...
@@ -405,8 +418,8 @@ Begin
         Begin
           if Pos(LowerCase('<a href="'), LowerCase(sl.Text)) > 0 then
           Begin
-            FileName := Copy(sl.Text, Pos('<a href="', sl.Text) + 9, Length(sl.Text));
-            FileName := Copy(FileName, 1, Pos('"', FileName) -1);
+            Path := Copy(sl.Text, Pos('<a href="', sl.Text) + 9, Length(sl.Text));
+            Path := Copy(Path, 1, Pos('"', Path) -1);
             bTryAgain:= True;
           End;
         end;
@@ -414,11 +427,11 @@ Begin
 
       if bTryAgain then
         // Call Function Again...
-        Result:= getStreamData(FileName);
+        Result:= getStreamData(Path);
 
       if not bTryAgain And not bFail then
       begin
-        ConvertSVG(FileName);
+        ConvertSVG(Path);
         Result:= MStream;
       end;
 
@@ -431,7 +444,7 @@ end;
 procedure TMainForm.HtmlViewerImageRequest(Sender: TObject;
   const SRC: ThtString; var Stream: TStream);
 var
-  fullName  : ThtString;
+  fullName  : String;
 
 Begin
 
@@ -471,7 +484,7 @@ end;
 
 procedure TMainForm.SE_MarkDownChange(Sender: TObject);
 begin
-  Caption:='Simple Markdown Editor: ' + IfThen(SE_MarkDown.Modified, '*', '') + ExtractFileName(savedialog1.FileName);
+  Caption:='Simple Markdown Editor: ' + IfThen(SE_MarkDown.Modified, '*', '') + MinimizeName(FileName, MainForm.Canvas, Trunc(MainForm.Width*3/4));
 end;
 
 procedure TMainForm.B_CopyClick(Sender: TObject);
@@ -490,12 +503,12 @@ begin
   OpenInBrowser;
 end;
 
-function TMainForm.OpenFile(FileName:string):boolean;
-var NewPath:ThtString;
+function TMainForm.OpenFile(Path: TFileName):boolean;
+var NewPath:TFileName;
 begin
   try
-    SE_MarkDown.Lines.LoadFromFile(FileName);
-    NewPath:=ExtractFilePath(FileName);
+    SE_MarkDown.Lines.LoadFromFile(Path);
+    NewPath:=ExtractFilePath(Path);
     if NewPath<>RootPath then
     begin
       SE_HTML.Clear;
@@ -504,8 +517,7 @@ begin
       HtmlViewer.ServerRoot:=NewPath;
       RootPath:=NewPath;
     end;
-    SaveDialog1.InitialDir:=NewPath;
-    SaveDialog1.FileName:=ExtractFileName(FileName);
+    FileName:=Path;
     SE_MarkDownChange(self);
     PageControl1.ActivePageIndex:=0;
     Result:=true;
@@ -515,8 +527,11 @@ begin
 end;
 
 procedure TMainForm.B_OpenFileClick(Sender: TObject);
+var CanClose:boolean;
 begin
-  if OpenDialog1.Execute then OpenFile(OpenDialog1.FileName);
+  CanClose:= false;
+  FormCloseQuery(self, CanClose);
+  if CanClose and OpenDialog1.Execute then OpenFile(OpenDialog1.FileName);
 end;
 
 procedure TMainForm.OpenInBrowser;

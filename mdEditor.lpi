@@ -24,9 +24,9 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="4"/>
+      <MinorVersionNr Value="6"/>
       <RevisionNr Value="1"/>
-      <BuildNr Value="24"/>
+      <BuildNr Value="26"/>
       <Attributes pvaPreRelease="True"/>
       <StringTable CompanyName="MRiscoC" LegalCopyright="(c) 2018 Miguel Risco-Castillo" ProductName="Markdown Editor"/>
     </VersionInfo>
@@ -73,6 +73,13 @@
               </Win32>
             </Options>
           </Linking>
+          <Other>
+            <CustomOptions Value="-dDEBUG"/>
+            <OtherDefines Count="1">
+              <Define0 Value="DEBUG"/>
+            </OtherDefines>
+            <CompilerPath Value="D:\fpcup\fpc\bin\i386-win32\fpc.exe"/>
+          </Other>
         </CompilerOptions>
       </Item2>
       <Item3 Name="Release">
@@ -104,6 +111,11 @@
               </Win32>
             </Options>
           </Linking>
+          <Other>
+            <OtherDefines Count="1">
+              <Define0 Value="DEBUG"/>
+            </OtherDefines>
+          </Other>
         </CompilerOptions>
       </Item3>
     </BuildModes>

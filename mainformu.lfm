@@ -46,13 +46,14 @@ object MainForm: TMainForm
       Left = 117
       Height = 30
       Top = 6
-      Width = 102
+      Width = 122
       Action = A_SaveAs
+      Images = ImageList1
       ImageIndex = 1
       TabOrder = 1
     end
     object B_Copy: TBitBtn
-      Left = 221
+      Left = 241
       Height = 30
       Top = 6
       Width = 102
@@ -63,17 +64,18 @@ object MainForm: TMainForm
       OnClick = B_CopyClick
     end
     object B_Paste: TBitBtn
-      Left = 325
+      Left = 345
       Height = 30
       Top = 6
-      Width = 60
+      Width = 80
       Action = A_Paste
+      Images = ImageList1
       ImageIndex = 3
       TabOrder = 3
       OnClick = B_PasteClick
     end
     object B_Convert: TBitBtn
-      Left = 387
+      Left = 427
       Height = 30
       Top = 6
       Width = 97
@@ -84,7 +86,7 @@ object MainForm: TMainForm
       OnClick = B_ConvertClick
     end
     object B_ViewBrowser: TBitBtn
-      Left = 486
+      Left = 526
       Height = 30
       Top = 6
       Width = 151
@@ -137,7 +139,7 @@ object MainForm: TMainForm
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
-        Highlighter = SynHTMLSyn1
+        Highlighter = SynMarkdownSyn1
         Keystrokes = <        
           item
             Command = ecUp
@@ -1409,5 +1411,11 @@ object MainForm: TMainForm
       ImageIndex = 5
       OnExecute = B_ViewBrowserClick
     end
+  end
+  object SynMarkdownSyn1: TSynMarkdownSyn
+    Enabled = False
+    CodeBlockAttri.Style = [fsItalic]
+    Left = 392
+    Top = 640
   end
 end

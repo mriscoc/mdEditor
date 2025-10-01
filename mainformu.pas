@@ -4,7 +4,7 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, SynEdit, SynHighlighterHTML, SynExportHTML,
-  SynHighlighterPas, SynHighlighterCpp, dbugintf,
+  SynEditTypes, SynHighlighterPas, SynHighlighterCpp, dbugintf,
   SynHighlighterJScript, SynHighlighterJava, SynHighlighterXML,
   synhighlighterunixshellscript, SynPopupMenu, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor, MarkdownUtils,
@@ -18,6 +18,7 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    A_SearchFind: TAction;
     A_SaveFile: TAction;
     A_OpenFile: TAction;
     A_SaveAs: TAction;
@@ -30,13 +31,16 @@ type
     B_Copy: TBitBtn;
     B_OpenFile: TBitBtn;
     B_Paste: TBitBtn;
+    B_Find: TBitBtn;
     B_Save: TBitBtn;
     B_ViewBrowser: TBitBtn;
     ChkB_DownloadfromWeb: TCheckBox;
+    FindDialog1: TFindDialog;
     HtmlViewer: THtmlViewer;
     ImageList1: TImageList;
     IniPropStorage1: TIniPropStorage;
     CopyHTLMViewer: TMenuItem;
+    M_SearchFind: TMenuItem;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     Panel1: TPanel;
@@ -52,7 +56,7 @@ type
     SynJavaSyn1: TSynJavaSyn;
     SynJScriptSyn1: TSynJScriptSyn;
     SynJSONSyn1: TSynJSONSyn;
-    SynMarkdownSyn: TSynMarkdownSyn;
+    SynMarkdownSyn1: TSynMarkdownSyn;
     SynPopupMenu1: TSynPopupMenu;
     SynSmaliSyn1: TSynSmaliSyn;
     SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn;
@@ -60,6 +64,9 @@ type
     SynXMLSyn1: TSynXMLSyn;
     TS_MarkDown: TTabSheet;
     TS_HTML: TTabSheet;
+    procedure A_SearchFindExecute(Sender: TObject);
+    procedure HtmlViewerEnter(Sender: TObject);
+    procedure onFind(Sender: TObject);
     procedure B_CopyClick(Sender: TObject);
     procedure B_PasteClick(Sender: TObject);
     procedure B_ViewBrowserClick(Sender: TObject);
@@ -77,6 +84,7 @@ type
       var Stream: TStream);
     procedure CopyHTLMViewerClick(Sender: TObject);
     procedure A_SaveFileExecute(Sender: TObject);
+    procedure PageControl1Enter(Sender: TObject);
     procedure SE_HTMLChange(Sender: TObject);
     procedure SE_MarkDownChange(Sender: TObject);
   private
@@ -108,6 +116,7 @@ var
   md:TMarkdownProcessor=nil;
   MStream:TMemoryStream=nil;
   SynMarkup: TSynEditMarkupHighlightAllCaret;
+  PreviousFocusedControl:TWinControl=nil;
 
 const
   CSSDecoration = '<style type="text/css">'#10+
@@ -294,10 +303,9 @@ begin
   begin
     response := MessageDlg(
       'Do you want to save changes?',
-      mtConfirmation, // Tipo de mensaje: Confirmación
-      [mbYes, mbNo, mbCancel], // Botones disponibles
-      0 // Contexto de ayuda (normalmente 0)
-    );
+      mtConfirmation,
+      [mbYes, mbNo, mbCancel],
+      0);
     case response of
       mrYes: CanClose := SaveAs;
       mrNo: CanClose := true;
@@ -337,6 +345,7 @@ begin
   HtmlViewer.OnHotSpotClick:=@HtmlViewerHotSpotClick;
   HtmlViewer.OnImageRequest:=@HtmlViewerImageRequest;
   HtmlViewer.LoadFromString(CSSDecoration);
+  PreviousFocusedControl := PageControl1.ActivePage;
   CheckParams;
 end;
 
@@ -477,6 +486,11 @@ begin
   SaveToFile;
 end;
 
+procedure TMainForm.PageControl1Enter(Sender: TObject);
+begin
+  PreviousFocusedControl := PageControl1.ActivePage;
+end;
+
 procedure TMainForm.SE_HTMLChange(Sender: TObject);
 begin
   SetPreview;
@@ -490,6 +504,39 @@ end;
 procedure TMainForm.B_CopyClick(Sender: TObject);
 begin
   Clipboard.AsText:=SE_MarkDown.text;
+end;
+
+procedure TMainForm.A_SearchFindExecute(Sender: TObject);
+begin
+  FindDialog1.Execute;
+end;
+
+procedure TMainForm.HtmlViewerEnter(Sender: TObject);
+begin
+  PreviousFocusedControl := HTMLViewer;
+end;
+
+procedure TMainForm.onFind(Sender: TObject);
+var
+  S:Unicodestring;
+  Options:TSynSearchOptions;
+  MatchCase, Prev:boolean;
+begin
+  S:=FindDialog1.FindText;
+  MatchCase:=frMatchCase in FindDialog1.Options;
+  Prev:=not (frDown in FindDialog1.Options);
+  Options := [];
+  if Prev then Options += [ssoBackwards];
+  if MatchCase then Options += [ssoMatchCase];
+  if frWholeWord in FindDialog1.Options then Options += [ssoWholeWord];
+  if not (frEntireScope in FindDialog1.Options) then Options += [ssoSelectedOnly];
+  if PreviousFocusedControl = HTMLViewer then
+    HTMLViewer.FindEx(S,MatchCase,Prev)
+  else
+    if PageControl1.ActivePage = TS_MarkDown then
+      SE_MarkDown.SearchReplace(S,'',Options)
+    else
+      SE_HTML.SearchReplace(S,'',Options);
 end;
 
 procedure TMainForm.B_PasteClick(Sender: TObject);

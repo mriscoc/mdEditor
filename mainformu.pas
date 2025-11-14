@@ -277,7 +277,7 @@ end;
 
 function TMainForm.SaveAs:boolean;
 begin
-  SaveDialog1.InitialDir:=FileName;
+  SaveDialog1.InitialDir:=ExtractFilePath(FileName);
   SaveDialog1.FileName:=ExtractFileName(FileName);
   if savedialog1.Execute then
   begin

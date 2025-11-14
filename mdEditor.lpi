@@ -24,9 +24,9 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="7"/>
+      <MinorVersionNr Value="8"/>
       <RevisionNr Value="1"/>
-      <BuildNr Value="26"/>
+      <BuildNr Value="1"/>
       <Attributes pvaPreRelease="True"/>
       <StringTable CompanyName="MRiscoC" LegalCopyright="(c) 2018 Miguel Risco-Castillo" ProductName="Markdown Editor"/>
     </VersionInfo>
@@ -191,6 +191,9 @@
     </Linking>
     <Other>
       <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
+      <OtherDefines Count="1">
+        <Define0 Value="DEBUG"/>
+      </OtherDefines>
     </Other>
   </CompilerOptions>
   <Debugging>

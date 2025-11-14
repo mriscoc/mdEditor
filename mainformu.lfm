@@ -1436,6 +1436,7 @@ object MainForm: TMainForm
     object A_SearchFind: TAction
       Caption = 'Find...'
       ImageIndex = 6
+      ShortCut = 16454
       OnExecute = A_SearchFindExecute
     end
   end

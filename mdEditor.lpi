@@ -25,7 +25,7 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="8"/>
-      <RevisionNr Value="1"/>
+      <RevisionNr Value="2"/>
       <BuildNr Value="1"/>
       <Attributes pvaPreRelease="True"/>
       <StringTable CompanyName="MRiscoC" LegalCopyright="(c) 2018 Miguel Risco-Castillo" ProductName="Markdown Editor"/>

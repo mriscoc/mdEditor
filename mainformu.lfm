@@ -1395,7 +1395,7 @@ object MainForm: TMainForm
   object ActionList1: TActionList
     Images = ImageList1
     Left = 248
-    Top = 230
+    Top = 200
     object A_OpenFile: TAction
       Caption = 'Open File'
       ImageIndex = 0
@@ -1443,6 +1443,8 @@ object MainForm: TMainForm
   object SynMarkdownSyn1: TSynMarkdownSyn
     Enabled = False
     CodeBlockAttri.Style = [fsItalic]
+    SpaceAttri.Foreground = clSilver
+    SpaceAttri.ForePriority = 10
     Left = 392
     Top = 640
   end
@@ -1451,5 +1453,30 @@ object MainForm: TMainForm
     OnFind = onFind
     Left = 624
     Top = 60
+  end
+  object SynRubySyn1: TSynRubySyn
+    Enabled = False
+    Left = 248
+    Top = 272
+  end
+  object SynCssSyn1: TSynCssSyn
+    DefaultFilter = 'Cascading Stylesheets (*.css)|*.css'
+    Enabled = False
+    CommentAttri.Foreground = clGreen
+    IdentifierAttri.Foreground = 12615680
+    KeyAttri.Foreground = clRed
+    NumberAttri.Foreground = clGreen
+    StringAttri.Foreground = clBlue
+    Left = 248
+    Top = 344
+  end
+  object SynPythonSyn1: TSynPythonSyn
+    DefaultFilter = 'Python Files (*.py)|*.py'
+    Enabled = False
+    CommentAttri.Foreground = clGreen
+    IdentifierAttri.Foreground = 12615680
+    KeyAttri.Foreground = clRed
+    Left = 248
+    Top = 416
   end
 end

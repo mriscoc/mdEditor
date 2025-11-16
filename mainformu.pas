@@ -9,9 +9,10 @@ uses
   synhighlighterunixshellscript, SynPopupMenu, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor, MarkdownUtils,
   LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals, HTMLUn2,
-  SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali, SynHighlighterMarkdown,
-  SynEditMarkupHighAll, ssl_openssl, httpsend, BGRABitmap, BGRASvg,
-  IniPropStorage, Menus, ActnList, FileCtrl;
+  SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali,
+  SynHighlighterMarkdown, SynHighlighterRuby, SynEditMarkupHighAll,
+  SynHighlighterCss, SynHighlighterPython, ssl_openssl, httpsend, BGRABitmap,
+  BGRASvg, IniPropStorage, Menus, ActnList, FileCtrl;
 
 type
 
@@ -50,6 +51,7 @@ type
     SE_HTML: TSynEdit;
     Splitter1: TSplitter;
     SynCppSyn1: TSynCppSyn;
+    SynCssSyn1: TSynCssSyn;
     SynExporterHTML1: TSynExporterHTML;
     SynFreePascalSyn1: TSynFreePascalSyn;
     SynHTMLSyn1: TSynHTMLSyn;
@@ -58,6 +60,8 @@ type
     SynJSONSyn1: TSynJSONSyn;
     SynMarkdownSyn1: TSynMarkdownSyn;
     SynPopupMenu1: TSynPopupMenu;
+    SynPythonSyn1: TSynPythonSyn;
+    SynRubySyn1: TSynRubySyn;
     SynSmaliSyn1: TSynSmaliSyn;
     SynUNIXShellScriptSyn1: TSynUNIXShellScriptSyn;
     SynVHDLSyn1: TSynVHDLSyn;
@@ -211,19 +215,39 @@ begin
         MainForm.SynExporterHTML1.Highlighter:=MainForm.SynFreePascalSyn1;
         exportlines;
       end;
-    'cpp','c++','c':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynCppSyn1;
-        exportlines;
-      end;
     'cmd','shell','bash':
       begin
         MainForm.SynExporterHTML1.Highlighter:=MainForm.SynUNIXShellScriptSyn1;
         exportlines;
       end;
+    'cpp','c++','c':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynCppSyn1;
+        exportlines;
+      end;
+    'css':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynCssSyn1;
+        exportlines;
+      end;
     'xml':
       begin
         MainForm.SynExporterHTML1.Highlighter:=MainForm.SynXMLSyn1;
+        exportlines;
+      end;
+    'markdown','md':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynMarkdownSyn1;
+        exportlines;
+      end;
+    'ruby':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynRubySyn1;
+        exportlines;
+      end;
+    'python', 'py':
+      begin
+        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynPythonSyn1;
         exportlines;
       end;
     'smali':

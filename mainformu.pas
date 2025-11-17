@@ -3,16 +3,16 @@ unit mainformu;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, SynEdit, SynHighlighterHTML, SynExportHTML,
-  SynEditTypes, SynHighlighterPas, SynHighlighterCpp, dbugintf,
-  SynHighlighterJScript, SynHighlighterJava, SynHighlighterXML,
+  Classes, SysUtils, LazFileUtils, SynEdit, SynHighlighterHTML,
+  SynExportHTMLCSS, SynEditTypes, SynHighlighterPas, SynHighlighterCpp,
+  dbugintf, SynHighlighterJScript, SynHighlighterJava, SynHighlighterXML,
   synhighlighterunixshellscript, SynPopupMenu, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, Clipbrd, MarkdownProcessor, MarkdownUtils,
   LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals, HTMLUn2,
   SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali,
   SynHighlighterMarkdown, SynHighlighterRuby, SynEditMarkupHighAll,
-  SynHighlighterCss, SynHighlighterPython, ssl_openssl, httpsend, BGRABitmap,
-  BGRASvg, IniPropStorage, Menus, ActnList, FileCtrl;
+  SynHighlighterCss, SynHighlighterPython, ssl_openssl, httpsend,
+  BGRABitmap, BGRASvg, IniPropStorage, Menus, ActnList, FileCtrl;
 
 type
 
@@ -52,7 +52,6 @@ type
     Splitter1: TSplitter;
     SynCppSyn1: TSynCppSyn;
     SynCssSyn1: TSynCssSyn;
-    SynExporterHTML1: TSynExporterHTML;
     SynFreePascalSyn1: TSynFreePascalSyn;
     SynHTMLSyn1: TSynHTMLSyn;
     SynJavaSyn1: TSynJavaSyn;
@@ -68,6 +67,7 @@ type
     SynXMLSyn1: TSynXMLSyn;
     TS_MarkDown: TTabSheet;
     TS_HTML: TTabSheet;
+    SynExporter: TSynExporterHTMLCSS;
     procedure A_SearchFindExecute(Sender: TObject);
     procedure HtmlViewerEnter(Sender: TObject);
     procedure onFind(Sender: TObject);
@@ -124,21 +124,6 @@ var
 
 const
   CSSDecoration = '<style type="text/css">'#10+
-                  'code{'#10+
-                  '  color: #A00;'#10+
-                  '}'#10+
-                  'pre{'#10+
-                  '  background: #f4f4f4;'#10+
-                  '  border: 1px solid #ddd;'#10+
-                  '  border-left: 3px solid #f36d33;'#10+
-                  '  color: #555;'#10+
-                  '  overflow: auto;'#10+
-                  '  padding: 1em 1.5em;'#10+
-                  '  display: block;'#10+
-                  '}'#10+
-                  'pre code{'#10+
-                  '  color: inherit;'#10+
-                  '}'#10+
                   'Blockquote{'#10+
                   '  border-left: 3px solid #d0d0d0;'#10+
                   '  padding-left: 0.5em;'#10+
@@ -151,7 +136,7 @@ const
                   '  border:1px solid;'#10+
                   '  border-collapse:collapse;'#10+
                   '}'#10+
-                  'th{'+
+                  'th{'#10+
                   '  padding:5px;'#10+
                   '  background: #e0e0e0;'#10+
                   '  border:1px solid;'#10+
@@ -159,6 +144,17 @@ const
                   'td{'#10+
                   '  padding:5px;'#10+
                   '  border:1px solid;'#10+
+                  '}'#10+
+                  'pre{'#10+
+                  '  background: #f4f4f4;'#10+
+                  '  border: 1px solid #ddd;'#10+
+                  '  border-left: 3px solid #f36d33;'#10+
+                  '  padding: 1em 1.5em;'#10+
+                  '}'#10+
+                  'code{'#10+
+                  '  font-size: 14px;'#10+
+                  '  font-family: "Courier New";'#10+
+                  '  color: #A00;'#10+
                   '}'#10+
                   '</style>'#10;
 
@@ -173,10 +169,10 @@ var
   var
     sstream: TStringStream;
   begin
-    MainForm.SynExporterHTML1.ExportAll(lines);
+    MainForm.SynExporter.ExportAll(lines);
     try
       sstream:=TStringStream.Create('');
-      MainForm.SynExporterHTML1.SaveToStream(sstream);
+      MainForm.SynExporter.SaveToStream(sstream);
       out_.Append(sstream.DataString);
     finally
       if assigned(sstream) then freeandnil(sstream);
@@ -185,88 +181,35 @@ var
 
 begin
   case meta of
-    'vhdl':
+    'vhdl': MainForm.SynExporter.Highlighter:=MainForm.SynVHDLSyn1;
+    'html': MainForm.SynExporter.Highlighter:=MainForm.SynHTMLSyn1;
+    'js','jscript','javascript': MainForm.SynExporter.Highlighter:=MainForm.SynJScriptSyn1;
+    'java': MainForm.SynExporter.Highlighter:=MainForm.SynJavaSyn1;
+    'json': MainForm.SynExporter.Highlighter:=MainForm.SynJSONSyn1;
+    'fpc','pas','pascal': MainForm.SynExporter.Highlighter:=MainForm.SynFreePascalSyn1;
+    'cmd','shell','bash': MainForm.SynExporter.Highlighter:=MainForm.SynUNIXShellScriptSyn1;
+    'cpp','c++','c': MainForm.SynExporter.Highlighter:=MainForm.SynCppSyn1;
+    'css': MainForm.SynExporter.Highlighter:=MainForm.SynCssSyn1;
+    'xml': MainForm.SynExporter.Highlighter:=MainForm.SynXMLSyn1;
+    'markdown','md': MainForm.SynExporter.Highlighter:=MainForm.SynMarkdownSyn1;
+    'ruby': MainForm.SynExporter.Highlighter:=MainForm.SynRubySyn1;
+    'python', 'py': MainForm.SynExporter.Highlighter:=MainForm.SynPythonSyn1;
+    'smali': MainForm.SynExporter.Highlighter:=MainForm.SynSmaliSyn1;
+  else
+    begin
+      if meta='' then   out_.append('<pre><code>')
+      else out_.append('<pre><code class="'+meta+'">');
+      for s in lines do
       begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynVHDLSyn1;
-        exportlines;
+        TUtils.appendValue(out_,s,0,Length(s));
+        out_.append(#10);
       end;
-    'html':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynHTMLSyn1;
-        exportlines;
-      end;
-    'js','jscript','javascript':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJScriptSyn1;
-        exportlines;
-      end;
-    'java':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJavaSyn1;
-        exportlines;
-      end;
-    'json':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynJSONSyn1;
-        exportlines;
-      end;
-    'fpc','pas','pascal':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynFreePascalSyn1;
-        exportlines;
-      end;
-    'cmd','shell','bash':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynUNIXShellScriptSyn1;
-        exportlines;
-      end;
-    'cpp','c++','c':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynCppSyn1;
-        exportlines;
-      end;
-    'css':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynCssSyn1;
-        exportlines;
-      end;
-    'xml':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynXMLSyn1;
-        exportlines;
-      end;
-    'markdown','md':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynMarkdownSyn1;
-        exportlines;
-      end;
-    'ruby':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynRubySyn1;
-        exportlines;
-      end;
-    'python', 'py':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynPythonSyn1;
-        exportlines;
-      end;
-    'smali':
-      begin
-        MainForm.SynExporterHTML1.Highlighter:=MainForm.SynSmaliSyn1;
-        exportlines;
-      end
-    else
-      begin
-        if meta='' then   out_.append('<pre><code>')
-        else out_.append('<pre><code class="'+meta+'">');
-        for s in lines do
-        begin
-          TUtils.appendValue(out_,s,0,Length(s));
-          out_.append(#10);
-        end;
-        out_.append('</code></pre>'#10);
-      end;
+      out_.append('</code></pre>'#10);
+      exit;
+    end;
   end;
+  MainForm.SynExporter.CodeClass:=meta;
+  exportlines;
 end;
 
 
@@ -344,6 +287,8 @@ var
 begin
   FileName := 'untitled.md';
   MStream := TMemoryStream.Create;
+  SynExporter:= TSynExporterHTMLCSS.Create(Mainform);
+  SynExporter.Options:= SynExporter.Options + [heoFragmentOnly];
   md := TMarkdownProcessor.createDialect(mdCommonMark);
   md.UnSafe := false;
   md.config.codeBlockEmitter:=TCodeEmiter.Create;
@@ -445,16 +390,21 @@ Begin
 
       if MStream.Size < 1024 then
       Begin
-        if Pos('Not Found', sl.Text) > 0 then bFail:= True;
-        if (Pos(LowerCase('<title>301 Moved Permanently</title>'), LowerCase(sl.Text)) > 0) or
-           (Pos(LowerCase('<html><body>'), LowerCase(sl.Text)) > 0) then
+        if Pos('not found', LowerCase(sl.Text)) > 0 then bFail:= True;
+        if (Pos('<title>301 moved permanently</title>', LowerCase(sl.Text)) > 0) or
+           (Pos('<html><body>', LowerCase(sl.Text)) > 0) then
         Begin
-          if Pos(LowerCase('<a href="'), LowerCase(sl.Text)) > 0 then
+          if Pos('<a href="', LowerCase(sl.Text)) > 0 then
           Begin
-            Path := Copy(sl.Text, Pos('<a href="', sl.Text) + 9, Length(sl.Text));
+            Path := Copy(sl.Text, Pos('<a href="', LowerCase(sl.Text)) + 9, Length(sl.Text));
             Path := Copy(Path, 1, Pos('"', Path) -1);
             bTryAgain:= True;
-          End;
+          end else
+            if ContainsText(path, 'http://') then
+            begin
+              path := ReplaceText(path, 'http://', 'https://');
+              bTryAgain:= True;
+            end;
         end;
       end;
 

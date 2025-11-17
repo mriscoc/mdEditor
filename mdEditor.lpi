@@ -16,19 +16,18 @@
         <DpiAware Value="True"/>
         <LongPathAware Value="True"/>
         <AnsiUTF8 Value="True"/>
-        <TextName Value="uEGroup.FPCMarkDown.TestHtmlConveter"/>
-        <TextDesc Value="Test Markdown Processor for FPC."/>
+        <TextName Value="mriscoc.mdeditor"/>
+        <TextDesc Value="Simple Markdown editor"/>
       </XPManifest>
       <Icon Value="0"/>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="8"/>
-      <RevisionNr Value="2"/>
+      <MinorVersionNr Value="9"/>
+      <RevisionNr Value="1"/>
       <BuildNr Value="1"/>
-      <Attributes pvaPreRelease="True"/>
-      <StringTable CompanyName="MRiscoC" LegalCopyright="(c) 2018 Miguel Risco-Castillo" ProductName="Markdown Editor"/>
+      <StringTable CompanyName="MRiscoC" LegalCopyright="(c) 2018-2025 Miguel Risco-Castillo" ProductName="Markdown Editor"/>
     </VersionInfo>
     <BuildModes Count="3">
       <Item1 Name="Default" Default="True"/>

@@ -1,11 +1,11 @@
 object MainForm: TMainForm
   Left = 0
-  Height = 809
+  Height = 721
   Top = 0
-  Width = 1177
+  Width = 982
   Caption = 'Simple Markdown Editor'
-  ClientHeight = 809
-  ClientWidth = 1177
+  ClientHeight = 721
+  ClientWidth = 982
   Constraints.MinHeight = 288
   Constraints.MinWidth = 662
   DesignTimePPI = 120
@@ -18,7 +18,7 @@ object MainForm: TMainForm
     Left = 0
     Height = 42
     Top = 0
-    Width = 1177
+    Width = 982
     Align = alTop
     AutoSize = True
     ChildSizing.LeftRightSpacing = 5
@@ -28,7 +28,7 @@ object MainForm: TMainForm
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 7
     ClientHeight = 42
-    ClientWidth = 1177
+    ClientWidth = 982
     TabOrder = 0
     object B_OpenFile: TBitBtn
       Left = 6
@@ -107,7 +107,7 @@ object MainForm: TMainForm
       OnClick = B_ViewBrowserClick
     end
     object ChkB_DownloadfromWeb: TCheckBox
-      Left = 1003
+      Left = 808
       Height = 30
       Top = 6
       Width = 161
@@ -119,7 +119,7 @@ object MainForm: TMainForm
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 767
+    Height = 679
     Top = 42
     Width = 484
     ActivePage = TS_MarkDown
@@ -130,11 +130,11 @@ object MainForm: TMainForm
     OnEnter = PageControl1Enter
     object TS_MarkDown: TTabSheet
       Caption = 'MarkDown'
-      ClientHeight = 734
+      ClientHeight = 646
       ClientWidth = 476
       inline SE_MarkDown: TSynEdit
         Left = 0
-        Height = 734
+        Height = 646
         Top = 0
         Width = 476
         Align = alClient
@@ -646,11 +646,11 @@ object MainForm: TMainForm
     end
     object TS_HTML: TTabSheet
       Caption = 'HTML'
-      ClientHeight = 734
+      ClientHeight = 646
       ClientWidth = 476
       inline SE_HTML: TSynEdit
         Left = 0
-        Height = 734
+        Height = 646
         Top = 0
         Width = 476
         Align = alClient
@@ -1161,15 +1161,15 @@ object MainForm: TMainForm
   end
   object Splitter1: TSplitter
     Left = 484
-    Height = 767
+    Height = 679
     Top = 42
     Width = 6
   end
   object HtmlViewer: THtmlViewer
     Left = 490
-    Height = 767
+    Height = 679
     Top = 42
-    Width = 687
+    Width = 492
     BorderStyle = htSingle
     DefBackground = clWhite
     HistoryMaxCount = 0
@@ -1207,21 +1207,6 @@ object MainForm: TMainForm
     Options = [ofPathMustExist, ofEnableSizing, ofViewDetail]
     Left = 90
     Top = 230
-  end
-  object SynExporterHTML1: TSynExporterHTML
-    Color = clWindow
-    CreateHTMLFragment = True
-    DefaultFilter = 'Documento HTML (*.htm,*.html)|*.htm;*.html'
-    Options = [heoFragmentOnly]
-    Font.Color = clBlack
-    Font.Height = -13
-    Font.Name = 'Courier New'
-    Highlighter = SynHTMLSyn1
-    HTMLFontSize = fs03
-    Title = 'mdEditor'
-    UseBackground = False
-    Left = 90
-    Top = 60
   end
   object SynFreePascalSyn1: TSynFreePascalSyn
     Enabled = False
@@ -1389,8 +1374,8 @@ object MainForm: TMainForm
     end
   end
   object SynPopupMenu1: TSynPopupMenu
-    Left = 88
-    Top = 529
+    Left = 90
+    Top = 64
   end
   object ActionList1: TActionList
     Images = ImageList1

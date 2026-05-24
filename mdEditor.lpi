@@ -130,19 +130,19 @@
     </RunParams>
     <RequiredPackages Count="9">
       <Item1>
-        <PackageName Value="ExtraHighlighters_Dsgn"/>
+        <PackageName Value="laz_synapse"/>
       </Item1>
       <Item2>
-        <PackageName Value="ExtraHighlighters"/>
+        <PackageName Value="ExtraHighlighters_Dsgn"/>
       </Item2>
       <Item3>
-        <PackageName Value="SynEditDsgn"/>
+        <PackageName Value="ExtraHighlighters"/>
       </Item3>
       <Item4>
-        <PackageName Value="BGRABitmapPack"/>
+        <PackageName Value="SynEditDsgn"/>
       </Item4>
       <Item5>
-        <PackageName Value="laz_synapse"/>
+        <PackageName Value="BGRABitmapPack"/>
       </Item5>
       <Item6>
         <PackageName Value="FrameViewer09"/>

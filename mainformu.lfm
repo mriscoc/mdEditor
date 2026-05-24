@@ -10,7 +10,7 @@ object MainForm: TMainForm
   Constraints.MinWidth = 662
   DesignTimePPI = 120
   SessionProperties = 'Height;Left;PageControl1.Width;Top;Width'
-  LCLVersion = '4.3.0.0'
+  LCLVersion = '4.5.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy

@@ -11,7 +11,7 @@ uses
   LCLIntf, ComCtrls, Buttons, StrUtils, HtmlView, HtmlGlobals, HTMLUn2,
   SynHighlighterVHDL, SynHighlighterJSON, SynHighlighterSmali,
   SynHighlighterMarkdown, SynHighlighterRuby, SynEditMarkupHighAll,
-  SynHighlighterCss, SynHighlighterPython, ssl_openssl, httpsend,
+  SynHighlighterCss, SynHighlighterPython, ssl_openssl3, httpsend,
   BGRABitmap, BGRASvg, IniPropStorage, Menus, ActnList, FileCtrl;
 
 type
@@ -342,27 +342,64 @@ begin
   Handled:=OpenUrl(URL);
 end;
 
-procedure ConvertSVG(FileName:string);
+procedure ConvertSVGStreamtoBMP;
 var
   bmp: TBGRABitmap;
   svg: TBGRASVG;
 begin
-  if (pos('.svg',lowercase(FileName))>0) then
-  begin
+  bmp:= nil;
+  svg:= nil;
+  try
+    MStream.Position:=0;
+    svg:= TBGRASVG.Create(MStream);
     try
-      MStream.Position:=0;
-      svg:= TBGRASVG.Create(MStream);
-      try
-        bmp:=TBGRABitmap.Create(trunc(svg.Width.value),trunc(svg.Height.value));
-        svg.Draw(bmp.Canvas2D,0,0);
-        MStream.Clear;
-        bmp.Bitmap.SaveToStream(MStream);
-      finally
-        if assigned(bmp) then FreeAndNil(bmp);
-      end;
+      bmp:=TBGRABitmap.Create(round(svg.Width.value),round(svg.Height.value));
+      svg.Draw(bmp.Canvas2D,0,0,cuPixel);
+      MStream.Clear;
+      bmp.Bitmap.SaveToStream(MStream);
     finally
-      if assigned(svg) then FreeAndNil(svg);
+      if assigned(bmp) then FreeAndNil(bmp);
     end;
+  finally
+    if assigned(svg) then FreeAndNil(svg);
+  end;
+end;
+
+function LoadIMGtoMStream(FileName:string):boolean;
+var
+  bmp: TBGRABitmap;
+begin
+  result:=false;
+  bmp:= nil;
+  try
+    try
+      bmp := TBgraBitmap.Create(FileName);
+      MStream.Clear;
+      bmp.Bitmap.SaveToStream(MStream);
+      result:=true;
+    except
+      on E: Exception do // ShowMessage('Unsupported file type');
+    end;
+  finally
+    if assigned(bmp) then FreeAndNil(bmp);
+  end;
+end;
+
+function isSVG(sl:TStringList):boolean;
+var
+  s:string;
+  l:integer;
+begin
+  result:= false;
+  l := 1;
+  for s in sl do
+  begin
+    if s.Contains('<svg version=') then
+    begin
+      result:= true;
+      exit;
+    end;
+    if l>5 then break;
   end;
 end;
 
@@ -414,7 +451,7 @@ Begin
 
       if not bTryAgain And not bFail then
       begin
-        ConvertSVG(Path);
+        if isSVG(sl) then ConvertSVGStreamtoBMP;
         Result:= MStream;
       end;
 
@@ -440,8 +477,7 @@ Begin
 
   if FileExists(fullName) then  // if local file, load it..
   Begin
-    MStream.LoadFromFile(fullName);
-    ConvertSVG(fullName);
+    if not LoadIMGtoMStream(fullName) then MStream.LoadFromFile(fullName);
     Stream:=MStream;
   end else if ChkB_DownloadfromWeb.Checked then  // if not local file, download it..
   Begin
